@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
-import { getArticlesController, getArticleByIdController } from "../utils/article.js";
+import { getArticlesController, getArticleByIdController, createArticleController, deleteArticleController, updateArticleController} from "../controllers/articleController.js";
+import { validateBody } from "../middlewares/validateBody.js";
+import { createArticlesSchema, updateArticleSchema } from "../validation/articleValidation.js";
 
 const articleRouter = Router();
 
@@ -9,10 +11,10 @@ articleRouter.get("/", ctrlWrapper(getArticlesController));
 // отримати статтю по id
 articleRouter.get("/:articleId", ctrlWrapper(getArticleByIdController));
 // створити статтю
-//articleRouter.post("/", ctrlWrapper(createArticle));
+articleRouter.post("/", validateBody(createArticlesSchema), ctrlWrapper(createArticleController));
 // оновити статтю
-//articleRouter.patch("/:articleId", ctrlWrapper(updateArticle));
-// видалити статтю
-//articleRouter.delete("/:articleId", ctrlWrapper(deleteArticle));
+articleRouter.patch("/:articleId", validateBody(updateArticleSchema), ctrlWrapper(updateArticleController));
+//видалити статтю
+articleRouter.delete("/:articleId", ctrlWrapper(deleteArticleController));
 
 export default articleRouter; 
