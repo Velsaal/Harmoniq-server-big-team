@@ -2,10 +2,16 @@
 
 import { getArticles, getArticleById, createArticle, deleteArticle, updateArticle } from "../services/articleService.js";
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 
 
 export const getArticlesController = async (req, res) => {
-    const articles = await getArticles();
+    const { page, perPage } = parsePaginationParams(req.query);
+    const articles = await getArticles({
+        page,
+        perPage
+    });
+    
      res.json({
     status: 200,
     message: 'Successfully found articles!',
