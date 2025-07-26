@@ -11,6 +11,8 @@ const InitMongoConnection = async () => {
     try {
         const {MONGODB_USER, MONGODB_PASSWORD, MONGODB_URL, MONGODB_DB} = process.env;
         const connectionString = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_URL}/${MONGODB_DB}?retryWrites=true&w=majority&appName=HarmoniqDB`;
+        
+        await mongoose.connect(connectionString);
         logger.info("Connection to MongoDB established");
     } catch (error) {
         logger.error("Error connecting to MongoDB", error);
