@@ -1,7 +1,8 @@
 import { register as registerService, login as loginService, refresh as refreshService, logout as logoutService } from "../services/authService.js";
 
 export const register = async (req, res) => {
-    const user = await registerService(req.body);
+    const { name, email, password } = req.body;
+    const user = await registerService(name, email, password);
     res.status(201).json({
         status: 201,
         message: "User registered successfully",
@@ -16,7 +17,8 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-    const { accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await loginService(req.body);
+    const { email, password } = req.body;
+    const { accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await loginService(email, password);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
@@ -48,7 +50,7 @@ export const logout = async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
     await logoutService(refreshToken);
     res.clearCookie('refreshToken');
-    res.status(200).json()
-};
+    res.status(204).send();
+  };
 
 export default { register, login, refresh, logout };

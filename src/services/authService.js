@@ -1,7 +1,6 @@
 import User from "../models/User.js";
 import Session from "../models/session.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import createHttpError from "http-errors";
 
@@ -86,9 +85,9 @@ export const refresh = async (refreshToken) => {
       };
     };
 
-export const logout = async (refreshToken) => {
-    if (!refreshToken) return;
-    await Session.deleteOne({ refreshToken });
-};
+    export const logout = async (refreshToken) => {
+        if (!refreshToken) return;
+        await Session.deleteOne({ refreshToken });
+      };
 
 export default { register, login, refresh, logout };
