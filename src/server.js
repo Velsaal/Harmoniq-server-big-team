@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino';
+import articleRouter from './routers/articleRouters.js';
 
 const logger = pino({
     transport: {
@@ -13,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 // app.use('/authors');
-// app.use('/articles');
+app.use('/articles', articleRouter);
 
 app.use((req, res) => {
     res.status(404).json({
