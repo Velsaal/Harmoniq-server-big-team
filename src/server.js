@@ -1,3 +1,4 @@
+import authRouter from './routers/authRouters.js';
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino';
@@ -12,8 +13,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-// app.use('/authors');
-// app.use('/articles');
+app.use('/api/auth', authRouter);
 
 app.use((req, res) => {
     res.status(404).json({
