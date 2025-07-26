@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
-import User from "../models/User";
-import Session from "../models/session";
+import User from "../models/User.js";
+import Session from "../models/session.js";
 
 const authMiddleware = async (req, res, next) => {
     try {
@@ -9,23 +9,23 @@ const authMiddleware = async (req, res, next) => {
         if (type !== 'Bearer' || !token) {
             throw createHttpError(401, 'Unauthorized');
         }
-      
-      const session = await Session.findOne({ refreshToken: token });
-      if (!session) {
-        throw createHttpError(401, 'Invalid access token');
-    } 
-    if (session.refreshTokenValidUntil < Date.now()) {
-        await Session.deleteOne({_id: session._id});
-        throw createHttpError(401, 'Access token expired');
-    }
-    req.user = await User.findById(session.userId);
 
-    const user = await User.findById(session.userId);
-    if (!user) {
-        throw createHttpError(401, 'User not found');
-    }
-    req.user = user;
-    next();
+        // Пошук сесії по accessToken
+        const session = await Session.findOne({ accessToken: token });
+        if (!session) {
+            throw createHttpError(401, 'Invalid access token');
+        }
+        if (session.accessTokenValidUntil < new Date()) {
+            await Session.deleteOne({ _id: session._id });
+            throw createHttpError(401, 'Access token expired');
+        }
+
+        const user = await User.findById(session.userId);
+        if (!user) {
+            throw createHttpError(401, 'User not found');
+        }
+        req.user = user;
+        next();
     } catch (error) {
         next(error);
     }
