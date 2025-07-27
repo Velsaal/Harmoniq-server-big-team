@@ -7,3 +7,14 @@ export const isValidId = (req, res, next) => {
     }
     next();
 }; 
+
+
+
+
+export const isValidArticleId = (req, res, next) => {
+  const id = req.params.articleId; 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return next(createError(400, 'Invalid ID'));
+  }
+  next();
+};

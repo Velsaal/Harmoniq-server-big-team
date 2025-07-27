@@ -5,6 +5,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 
 
+
 export const getArticlesController = async (req, res) => {
     const { page, perPage } = parsePaginationParams(req.query);
     const articles = await getArticles({
@@ -40,7 +41,16 @@ export const getArticleByIdController = async (req, res) => {
 
 
 export const createArticleController = async (req, res) => {
-    const article = await createArticle(req.body);
+    console.log('req.user:', req.user); 
+    
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthorized: user not found' });
+    }
+    
+    const article = await createArticle({
+        ...req.body,
+       userId: req.user._id,
+    });
      res.status(201).json({
     status: 201,
     message: `Successfully created an article!`,
@@ -51,7 +61,8 @@ export const createArticleController = async (req, res) => {
 
 export const deleteArticleController = async (req, res) => {
     const { articleId } = req.params;
-    const article = await deleteArticle(articleId);
+    const userId = req.user._id;
+    const article = await deleteArticle(articleId, userId);
 
     if (!article) {
       throw createHttpError(404, 'Article not found');
@@ -62,7 +73,8 @@ export const deleteArticleController = async (req, res) => {
 
 export const updateArticleController = async (req, res, next) => {
     const { articleId } = req.params;
-    const result = await updateArticle(articleId, req.body);
+    const userId = req.user._id;
+    const result = await updateArticle(articleId, userId, req.body);
 
     if (!result) {
          throw createHttpError(404, 'Article not found');
