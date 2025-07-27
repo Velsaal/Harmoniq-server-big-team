@@ -3,6 +3,7 @@
 import { getArticles, getArticleById, createArticle, deleteArticle, updateArticle } from "../services/articleService.js";
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
+import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
 
 
@@ -41,16 +42,22 @@ export const getArticleByIdController = async (req, res) => {
 
 
 export const createArticleController = async (req, res) => {
-    console.log('req.user:', req.user); 
+   
+    const img = req.file;
+    let imgUrl;
     
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized: user not found' });
-    }
+  if (img) {
+   
+      imgUrl = await saveFileToCloudinary(img);
     
+  }
+  
     const article = await createArticle({
         ...req.body,
-       userId: req.user._id,
+        userId: req.user._id,
+       img: imgUrl,
     });
+    
      res.status(201).json({
     status: 201,
     message: `Successfully created an article!`,
@@ -74,7 +81,19 @@ export const deleteArticleController = async (req, res) => {
 export const updateArticleController = async (req, res, next) => {
     const { articleId } = req.params;
     const userId = req.user._id;
-    const result = await updateArticle(articleId, userId, req.body);
+    const img = req.file;
+    let imgUrl;
+    
+  if (img) {
+   
+      imgUrl = await saveFileToCloudinary(img);
+    
+  }
+
+    const result = await updateArticle(articleId, userId, {
+        ...req.body,
+        img:imgUrl,
+     });
 
     if (!result) {
          throw createHttpError(404, 'Article not found');

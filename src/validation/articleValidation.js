@@ -1,7 +1,6 @@
 import Joi from 'joi';
 
 export const createArticlesSchema = Joi.object({
-  img: Joi.string().uri().required(),
   title: Joi.string().min(3).max(48).required(),
   desc: Joi.string().min(100).max(4000).required(),
   name: Joi.string().min(4).max(50).required(),
@@ -12,7 +11,6 @@ export const createArticlesSchema = Joi.object({
 
 
 export const updateArticleSchema = Joi.object({
-  img: Joi.string().uri().optional(),
   title: Joi.string().min(3).max(48).optional(),
   desc: Joi.string().min(100).max(4000).optional(),
   name: Joi.string().min(4).max(50).optional(),
