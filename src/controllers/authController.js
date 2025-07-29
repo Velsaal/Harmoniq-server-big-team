@@ -1,17 +1,26 @@
 import { register as registerService, login as loginService, refresh as refreshService, logout as logoutService } from "../services/authService.js";
+import fs from "fs/promises";
+import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
-    const user = await registerService(name, email, password);
+    let avatarUrl = "";
+    if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, { folder: "avatars" });
+        avatarUrl = result.secure_url;
+        await fs.unlink(req.file.path); 
+    }
+    const user = await registerService(name, email, password, avatarUrl);
     res.status(201).json({
         status: 201,
         message: "User registered successfully",
         data: {
-         _id: user._id,
-         name: user.name,
-         email: user.email,
-         createdAt: user.createdAt,
-         updatedAt: user.updatedAt,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            avatarUrl: user.avatarUrl,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         }
     });
 };
