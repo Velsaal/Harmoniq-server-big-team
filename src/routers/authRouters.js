@@ -2,13 +2,14 @@ import { Router } from "express";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import { registerSchema } from "../validation/authValidation.js";
 import  validateBody  from "../middlewares/validateBody.js";
+import { upload } from "../middlewares/multer.js";
 import { register, login, refresh, logout } from "../controllers/authController.js";
 
 const authRouter = Router();
 
 
-authRouter.post("/register", ctrlWrapper(register), validateBody(registerSchema));
-authRouter.post("/login", ctrlWrapper(login))
+authRouter.post("/register", upload.single("avatar"), validateBody(registerSchema), ctrlWrapper(register));
+authRouter.post("/login", ctrlWrapper(login));
 authRouter.post("/refresh", ctrlWrapper(refresh));
 authRouter.post("/logout", ctrlWrapper(logout));
 
