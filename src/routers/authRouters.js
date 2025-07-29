@@ -7,8 +7,8 @@ import { register, login, refresh, logout } from "../controllers/authController.
 const authRouter = Router();
 
 
-authRouter.post("/register", ctrlWrapper(register), validateBody(registerSchema));
-authRouter.post("/login", ctrlWrapper(login))
+authRouter.post("/register", validateBody(registerSchema), ctrlWrapper(register));
+authRouter.post("/login",  ctrlWrapper(login));
 authRouter.post("/refresh", ctrlWrapper(refresh));
 authRouter.post("/logout", ctrlWrapper(logout));
 
