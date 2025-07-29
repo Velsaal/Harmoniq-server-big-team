@@ -19,12 +19,5 @@ userRouter.delete('/:userId/saved-articles/:articleId', ctrlWrapper(removeArticl
 userRouter.patch('/:userId', ctrlWrapper(updateUserInfo));
 userRouter.post('/:userId/avatar', ctrlWrapper(uploadUserAvatar));
 
-// ---  як  буде авторизація ---
-// userRouter.get('/me', ctrlWrapper(getUserInfo));
-// userRouter.get('/saved-articles', ctrlWrapper(getSavedArticles));
-// userRouter.post('/saved-articles/:articleId', ctrlWrapper(addArticleToSaved));
-// userRouter.delete('/saved-articles/:articleId', ctrlWrapper(removeArticleFromSaved));
-// userRouter.patch('/me', ctrlWrapper(updateUserInfo));
-// userRouter.post('/avatar', ctrlWrapper(uploadUserAvatar));
 
 export default userRouter;
