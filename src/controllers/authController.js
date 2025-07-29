@@ -57,9 +57,12 @@ export const refresh = async (req, res) => {
 
 export const logout = async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
     await logoutService(refreshToken);
     res.clearCookie('refreshToken');
-    res.status(204).send();
+    res.status(200).json();
   };
 
 export default { register, login, refresh, logout };
