@@ -7,7 +7,6 @@ import pino from 'pino';
 import creatorsRouter from './routers/creators.js';
 import './models/Article.js';
 
-
 const logger = pino({
   transport: {
     target: 'pino-pretty',
@@ -24,12 +23,17 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);     
 app.use('/api/creators', creatorsRouter);
 
-// app.use('/authors');
-// app.use('/articles');
-
 app.use((req, res) => {
   res.status(404).json({
     message: 'Not Found',
+  });
+});
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+    status: "error",
+    message: err.message,
   });
 });
 
@@ -45,4 +49,7 @@ const setupServer = async () => {
 };
 
 export default setupServer;
+
+
+
 

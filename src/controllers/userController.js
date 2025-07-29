@@ -1,12 +1,13 @@
+import createError from "http-errors";
 import User from "../models/User.js";
 
 // --- Отримати інформацію про користувача ---
-export const getUserInfo = async (req, res) => {
+export const getUserInfo = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId).select("-password");
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
     res.json({
       status: "success",
@@ -22,12 +23,12 @@ export const getUserInfo = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
 
 // --- Отримати список збережених статей ---
-export const getSavedArticles = async (req, res) => {
+export const getSavedArticles = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId).populate({
@@ -35,29 +36,29 @@ export const getSavedArticles = async (req, res) => {
       select: "title author createdAt updatedAt"
     });
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
     res.json({
       status: "success",
       data: user.savedArticles,
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
 
 // --- Додати статтю до збережених ---
-export const addArticleToSaved = async (req, res) => {
+export const addArticleToSaved = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const { articleId } = req.params;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
     if (user.savedArticles.includes(articleId)) {
-      return res.status(400).json({ status: "error", message: "Article already saved" });
+      throw createError(400, "Article already saved");
     }
     user.savedArticles.push(articleId);
     await user.save();
@@ -67,27 +68,26 @@ export const addArticleToSaved = async (req, res) => {
       data: user.savedArticles,
     });
   } catch (error) {
-    console.error("Error in addArticleToSaved:", error);
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
 
 // --- Видалити статтю зі збережених ---
-export const removeArticleFromSaved = async (req, res) => {
+export const removeArticleFromSaved = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const { articleId } = req.params;
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
     const initialLength = user.savedArticles.length;
     user.savedArticles = user.savedArticles.filter(
       id => id.toString() !== articleId
     );
     if (user.savedArticles.length === initialLength) {
-      return res.status(404).json({ status: "error", message: "Article not in saved list" });
+      throw createError(404, "Article not in saved list");
     }
     await user.save();
     res.json({
@@ -96,12 +96,12 @@ export const removeArticleFromSaved = async (req, res) => {
       data: user.savedArticles,
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
 
 // --- Оновити інформацію про користувача за userId ---
-export const updateUserInfo = async (req, res) => {
+export const updateUserInfo = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const updateData = req.body;
@@ -113,7 +113,7 @@ export const updateUserInfo = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
 
     res.json({
@@ -122,18 +122,18 @@ export const updateUserInfo = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
 
 // --- Додати/оновити аватар користувача за userId ---
-export const uploadUserAvatar = async (req, res) => {
+export const uploadUserAvatar = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const { avatarUrl } = req.body;
 
     if (!avatarUrl) {
-      return res.status(400).json({ status: "error", message: "No avatar provided" });
+      throw createError(400, "No avatar provided");
     }
 
     const user = await User.findByIdAndUpdate(
@@ -143,7 +143,7 @@ export const uploadUserAvatar = async (req, res) => {
     );
 
     if (!user) {
-      return res.status(404).json({ status: "error", message: "User not found" });
+      throw createError(404, "User not found");
     }
 
     res.json({
@@ -152,6 +152,7 @@ export const uploadUserAvatar = async (req, res) => {
       data: user,
     });
   } catch (error) {
-    res.status(500).json({ status: "error", message: error.message });
+    next(error);
   }
 };
+
