@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import pino from 'pino';
 import creatorsRouter from './routers/creators.js';
+import articleRouter from './routers/articleRouters.js';
 
 const logger = pino({
   transport: {
@@ -20,7 +21,7 @@ app.use(cookieParser());
 app.use('/api/auth', authRouter);
 
 // app.use('/authors');
-// app.use('/articles');
+app.use('/articles', articleRouter);
 app.use('/api/creators', creatorsRouter);
 
 
