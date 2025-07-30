@@ -1,0 +1,52 @@
+tags:
+  - Articles
+summary: Create article
+operationId: createArticle
+description: 'Create article with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - title
+          - desc
+          - photo
+        properties:
+          title:
+            description: "Article's title"
+            type: string
+            example: 'Some title'
+          desc:
+            description: "Article's description"
+            type: string
+            example: 'description lorem100'
+          photo:
+            description: "Article's photo"
+            type: string
+            format: binary
+responses:
+  '201':
+    description: 'Article created successfully'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully created article!
+            data:
+              type: object
+              $ref: ../../components/schemas/article.yaml
+  '401':
+    $ref: '../../components/responses/401.yaml'

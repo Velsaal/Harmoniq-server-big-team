@@ -1,0 +1,43 @@
+tags:
+  - Auth
+summary: Reset password
+operationId: resetUserPassword
+description: 'Reset user password with payload'
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - token
+          - password
+        properties:
+          token:
+            description: 'Reset password token'
+            type: string
+            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODRhYWI2OTQzNjdiM2IyZTgzOWUwNDciLCJlbWFpbCI6InNlcmhpaV9sdWtpYW5lbmtvQG1ldGEudWEiLCJpYXQiOjE3NDk5MTE1NTIsImV4cCI6MTc0OTkxMjQ1Mn0.iCciicOwfBTJSjw0OAAaxZj3qfm5m8ptAGsLMpfXy0E'
+          password:
+            description: 'User`s password'
+            type: string
+            format: password
+responses:
+  '200':
+    description: 'User password reset successfully'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Password was successfully reset!
+  '401':
+    $ref: '../../components/responses/401.yaml'

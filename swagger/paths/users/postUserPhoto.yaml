@@ -1,0 +1,44 @@
+tags:
+  - Users
+summary: Add user's avatar photo
+operationId: postUserAvatarPhoto
+description: "Add user's avatar photo"
+security:
+  - bearerAuth: []
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - photo
+        properties:
+          photo:
+            description: "User's avatar photo"
+            type: string
+            format: binary
+responses:
+  '200':
+    description: 'User avatar photo added successfully'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully added user avatar photo!
+            data:
+              type: object
+              $ref: ../../components/schemas/users.yaml
+  '401':
+    $ref: ../../components/responses/401.yaml
+  '404':
+    $ref: ../../components/responses/404.yaml

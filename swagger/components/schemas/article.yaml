@@ -1,0 +1,42 @@
+type: object
+required:
+  - _id
+  - title
+  - img
+  - desc
+  - rate
+  - ownerId
+  - date
+properties:
+  _id:
+    description: "Article's id"
+    type: string
+    example: 688385d5fd28844fe82bc4b6
+  title:
+    description: "Article's title"
+    type: string
+    example: 'Some title'
+  img:
+    description: "Link to article's image"
+    type: string
+    example: 'https://res.cloudinary.com/dok3yyfgg/image/upload/v1753449944/g2glnvmdpwgyyuxfj6dl.jpg'
+  desc:
+    description: "Article's description"
+    type: string
+    example: 'description lorem100'
+  rate:
+    description: "Article's rate"
+    type: number
+    example: 0
+  ownerId:
+    description: 'Id of the user who created the article'
+    type: string
+    example: '65e4decdd286b30065d54af8'
+  ownerName:
+    description: 'Name of the user who created the article'
+    type: string
+    example: 'John Doe'
+  date:
+    description: "Article's creation date"
+    type: string
+    example: '2025-07-25'
