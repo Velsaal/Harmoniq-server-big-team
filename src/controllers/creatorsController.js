@@ -8,3 +8,12 @@ export const getTopCreators = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllCreators = async (req, res, next) => {
+  try {
+    const creators = await User.find({}, 'name avatarUrl articlesAmount email createdAt updatedAt');
+    res.json(creators);
+  } catch (error) {
+    next(error);
+  }
+};
