@@ -10,7 +10,12 @@ export const register = async (req, res) => {
         avatarUrl = result.secure_url;
         await fs.unlink(req.file.path); 
     }
-    const user = await registerService(name, email, password, avatarUrl);
+    const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await registerService(name, email, password, avatarUrl);
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        expiresIn: refreshTokenExpiresIn,
+        samesite: 'strict',
+    });
     res.status(201).json({
         status: 201,
         message: "User registered successfully",
@@ -21,6 +26,7 @@ export const register = async (req, res) => {
             avatarUrl: user.avatarUrl,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+            accessToken
         }
     });
 };

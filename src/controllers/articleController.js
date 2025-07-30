@@ -28,7 +28,7 @@ export const getArticlesController = async (req, res, next) => {
 };
 
 export const getArticleByIdController = async (req, res, next) => {
-  try {
+  
     const { articleId } = req.params;
     const article = await getArticleById(articleId);
 
@@ -41,13 +41,9 @@ export const getArticleByIdController = async (req, res, next) => {
       message: `Successfully found article with id ${articleId}!`,
       data: article,
     });
-  } catch (error) {
-    next(error);
-  }
 };
 
 export const createArticleController = async (req, res, next) => {
-  try {
     const img = req.file;
     let imgUrl;
 
@@ -66,13 +62,9 @@ export const createArticleController = async (req, res, next) => {
       message: `Successfully created an article!`,
       data: article,
     });
-  } catch (error) {
-    next(error);
-  }
 };
 
-export const deleteArticleController = async (req, res, next) => {
-  try {
+export const deleteArticleController = async (req, res, next) => {  
     const { articleId } = req.params;
     const userId = req.user._id;
     const article = await deleteArticle(articleId, userId);
@@ -82,13 +74,10 @@ export const deleteArticleController = async (req, res, next) => {
     }
 
     res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
 };
 
 export const updateArticleController = async (req, res, next) => {
-  try {
+  
     const { articleId } = req.params;
     const userId = req.user._id;
     const img = req.file;
@@ -112,7 +101,5 @@ export const updateArticleController = async (req, res, next) => {
       message: `Successfully update an article!`,
       data: result.article,
     });
-  } catch (error) {
-    next(error);
-  }
+  
 };

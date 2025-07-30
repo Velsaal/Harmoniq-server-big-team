@@ -14,7 +14,25 @@ export const register = async (name, email, password, avatarUrl = "") => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashedPassword, avatarUrl });
-    return user;
+
+    const accessToken = crypto.randomUUID();
+    const refreshToken = crypto.randomUUID();
+    const now = Date.now();
+    await Session.create({
+        userId: user._id,
+        refreshToken,
+        accessToken,
+        refreshTokenValidUntil: new Date(now + REFRESH_TOKEN_EXPIRES_IN),
+        accessTokenValidUntil: new Date(now + ACCESS_TOKEN_EXPIRES_IN),
+    });
+
+    return {
+        user,
+        accessToken,
+        refreshToken,
+        accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
+        refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
+    };
 };
 
 export const login = async (email, password) => {
