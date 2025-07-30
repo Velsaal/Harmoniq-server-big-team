@@ -1,14 +1,12 @@
 import { register as registerService, login as loginService, refresh as refreshService, logout as logoutService } from "../services/authService.js";
 import fs from "fs/promises";
-import cloudinary from "../utils/cloudinary.js";
+import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
     let avatarUrl = "";
     if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.path, { folder: "avatars" });
-        avatarUrl = result.secure_url;
-        await fs.unlink(req.file.path); 
+        avatarUrl = await saveFileToCloudinary(req.file);
     }
     const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await registerService(name, email, password, avatarUrl);
     res.cookie('refreshToken', refreshToken, {

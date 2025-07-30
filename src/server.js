@@ -28,7 +28,6 @@ app.use('/api-docs', swaggerDocs());
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
-// app.use('/authors');
 app.use('/articles', articleRouter);
 
 app.use('/api/creators', creatorsRouter);
@@ -39,7 +38,6 @@ app.use((req, res) => {
   });
 });
 
-// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
 
   if (err.code === 'LIMIT_FILE_SIZE') {
