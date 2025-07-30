@@ -28,7 +28,7 @@ app.use('/api-docs', swaggerDocs());
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
-app.use('/articles', articleRouter);
+app.use('/api/articles', articleRouter);
 
 app.use('/api/creators', creatorsRouter);
 

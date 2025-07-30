@@ -103,9 +103,12 @@ export const refresh = async (refreshToken) => {
       };
     };
 
-    export const logout = async (refreshToken) => {
-        if (!refreshToken) return;
-        await Session.deleteOne({ refreshToken });
-      };
+    export const logout = async (accessToken) => {
+      if (!accessToken) return;
+      const result = await Session.deleteOne({ accessToken });
+      if (result.deletedCount === 0) {
+          throw createHttpError(401, 'Session not found');
+      }
+  };
 
 export default { register, login, refresh, logout };
