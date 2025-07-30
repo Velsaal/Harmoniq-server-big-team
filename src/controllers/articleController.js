@@ -1,72 +1,78 @@
-// articleController
-
-import { getArticles, getArticleById, createArticle, deleteArticle, updateArticle } from "../services/articleService.js";
+import {
+  getArticles,
+  getArticleById,
+  createArticle,
+  deleteArticle,
+  updateArticle
+} from "../services/articleService.js";
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
-
-
-export const getArticlesController = async (req, res) => {
+export const getArticlesController = async (req, res, next) => {
+  try {
     const { page, perPage } = parsePaginationParams(req.query);
     const articles = await getArticles({
-        page,
-        perPage
+      page,
+      perPage
     });
-    
-     res.json({
-    status: 200,
-    message: 'Successfully found articles!',
-    data: articles,
-  });
-};
 
-
-export const getArticleByIdController = async (req, res) => {
-  const { articleId } = req.params;
-  const article = await getArticleById(articleId);
-  
-
-  if (!article) {
-   throw createHttpError(404, 'Article not found');
+    res.json({
+      status: 200,
+      message: 'Successfully found articles!',
+      data: articles,
+    });
+  } catch (error) {
+    next(error);
   }
-
- 
-  res.json({
-    status: 200,
-    message: `Successfully found article with id ${articleId}!`,
-    data: article,
-  });
 };
 
+export const getArticleByIdController = async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    const article = await getArticleById(articleId);
 
+    if (!article) {
+      throw createHttpError(404, 'Article not found');
+    }
 
-export const createArticleController = async (req, res) => {
-   
+    res.json({
+      status: 200,
+      message: `Successfully found article with id ${articleId}!`,
+      data: article,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createArticleController = async (req, res, next) => {
+  try {
     const img = req.file;
     let imgUrl;
-    
-  if (img) {
-   
+
+    if (img) {
       imgUrl = await saveFileToCloudinary(img);
-    
-  }
-  
+    }
+
     const article = await createArticle({
-        ...req.body,
-        userId: req.user._id,
-       img: imgUrl,
+      ...req.body,
+      userId: req.user._id,
+      img: imgUrl,
     });
-    
-     res.status(201).json({
-    status: 201,
-    message: `Successfully created an article!`,
-    data: article,
-  });
+
+    res.status(201).json({
+      status: 201,
+      message: `Successfully created an article!`,
+      data: article,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-
-export const deleteArticleController = async (req, res) => {
+export const deleteArticleController = async (req, res, next) => {
+  try {
     const { articleId } = req.params;
     const userId = req.user._id;
     const article = await deleteArticle(articleId, userId);
@@ -76,32 +82,37 @@ export const deleteArticleController = async (req, res) => {
     }
 
     res.status(204).send();
-}
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateArticleController = async (req, res, next) => {
+  try {
     const { articleId } = req.params;
     const userId = req.user._id;
     const img = req.file;
     let imgUrl;
-    
-  if (img) {
-   
+
+    if (img) {
       imgUrl = await saveFileToCloudinary(img);
-    
-  }
-
-    const result = await updateArticle(articleId, userId, {
-        ...req.body,
-        img:imgUrl,
-     });
-
-    if (!result) {
-         throw createHttpError(404, 'Article not found');
     }
 
-     res.json({
-    status: 200,
-    message: `Successfully update an article!`,
-    data: result.article,
-  });
+    const result = await updateArticle(articleId, userId, {
+      ...req.body,
+      img: imgUrl,
+    });
+
+    if (!result) {
+      throw createHttpError(404, 'Article not found');
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully update an article!`,
+      data: result.article,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -1,7 +1,7 @@
 import createError from "http-errors";
 import User from "../models/User.js";
 
-// --- Отримати інформацію про користувача ---
+
 export const getUserInfo = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -27,7 +27,7 @@ export const getUserInfo = async (req, res, next) => {
   }
 };
 
-// --- Отримати список збережених статей ---
+
 export const getSavedArticles = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -47,7 +47,7 @@ export const getSavedArticles = async (req, res, next) => {
   }
 };
 
-// --- Додати статтю до збережених ---
+
 export const addArticleToSaved = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -72,7 +72,7 @@ export const addArticleToSaved = async (req, res, next) => {
   }
 };
 
-// --- Видалити статтю зі збережених ---
+
 export const removeArticleFromSaved = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -100,7 +100,7 @@ export const removeArticleFromSaved = async (req, res, next) => {
   }
 };
 
-// --- Оновити інформацію про користувача за userId ---
+
 export const updateUserInfo = async (req, res, next) => {
   try {
     const userId = req.params.userId;
@@ -126,7 +126,7 @@ export const updateUserInfo = async (req, res, next) => {
   }
 };
 
-// --- Додати/оновити аватар користувача за userId ---
+
 export const uploadUserAvatar = async (req, res, next) => {
   try {
     const userId = req.params.userId;
