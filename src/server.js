@@ -41,6 +41,14 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
+
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      status: "error",
+      message: "Image too large. Max size is 1MB.",
+    });
+  }
+     
   res.status(err.status || 500).json({
     status: 'error',
     message: err.message,
