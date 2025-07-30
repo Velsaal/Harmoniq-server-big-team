@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Harmoniq API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: This is a documentation of Harmoniq app
+tags:
+  - name: Articles
+    description: Operations about articles.
+  - name: Auth
+    description: Auth operations.
+  - name: Users
+    description: Operations about users/author.
+servers:
+  - url: https://harmoniq-server-big-team.onrender.com
+paths:
+  /auth/register:
+    post:
+      $ref: ../swagger/paths/auth/register.yaml
+  /auth/login:
+    post:
+      $ref: ../swagger/paths/auth/login.yaml
+  /auth/logout:
+    post:
+      $ref: ../swagger/paths/auth/logout.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+  /auth/send-reset-email:
+    post:
+      $ref: ../swagger/paths/auth/send-reset-email.yaml
+  /auth/reset-pwd:
+    post:
+      $ref: ../swagger/paths/auth/reset-pwd.yaml
+
+  /articles:
+    post:
+      $ref: ../swagger/paths/articles/post.yaml
+    get:
+      $ref: ../swagger/paths/articles/get.yaml
+  /articles/{id}:
+    get:
+      $ref: ../swagger/paths/articles/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/articles/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/articles/{id}/delete.yaml
+
+  /authors:
+    get:
+      $ref: ../swagger/paths/users/getAllUsers.yaml
+  /authors/{id}:
+    get:
+      $ref: ../swagger/paths/users/{id}/getUsersById.yaml
+  /authors/{id}/saved-articles:
+    get:
+      $ref: '../swagger/paths/users/{id}/getSavedArticlesById.yaml'
+  /authors/{id}/saved-articles/{articleId}:
+    patch:
+      $ref: ../swagger/paths/users/patchSavedArticlesById.yaml
+    delete:
+      $ref: '../swagger/paths/users/deleteSavedArticlesById.yaml'
+  /authors/{id}/articles:
+    get:
+      $ref: ../swagger/paths/users/getArticlesById.yaml
+  /user/photo:
+    post:
+      $ref: ../swagger/paths/users/postUserPhoto.yaml
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -1,0 +1,36 @@
+type: object
+required:
+  - _id
+  - name
+  - email
+properties:
+  _id:
+    description: "User's id"
+    type: string
+    example: 688507eb52768403f159c9c2
+  name:
+    description: "User's name"
+    type: string
+    example: 'alicewow'
+  email:
+    description: "User's email"
+    type: string
+    example: qwerty123@gmail.com
+  savedArticles:
+    description: 'Saved articles for User'
+    type: array
+    items:
+      type: string
+      example: [68498236a100312bea078fe7, 688507eb52768403f159c9c2]
+  createdAt:
+    description: "User's creation date"
+    type: string
+    example: '2025-07-25'
+  updatedAt:
+    description: "User's change date"
+    type: string
+    example: '2025-07-25'
+  avatarUrl:
+    description: "User's avatar URL"
+    type: string
+    example: 'https://example.com/avatar.jpg'
