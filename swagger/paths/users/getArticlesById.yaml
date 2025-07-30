@@ -1,0 +1,36 @@
+tags:
+  - Users
+summary: Get own articles
+operationId: getOwnArticlesByAuthorId
+description: 'Get own articles'
+security: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '688507eb52768403f159c9c2'
+responses:
+  '200':
+    description: "Successfully found user's own articles with id 688507eb52768403f159c9c2!"
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully found user's saved articles with id 688507eb52768403f159c9c2!"
+            data:
+              type: object
+              $ref: ../../components/schemas/article.yaml
+  '404':
+    $ref: ../../components/responses/404.yaml

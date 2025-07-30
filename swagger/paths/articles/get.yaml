@@ -1,0 +1,75 @@
+tags:
+  - Articles
+summary: Get list of articles
+operationId: getArticles
+description: 'Get list of articles with parination'
+security:
+  - bearerAuth: []
+parameters:
+  - in: query
+    name: page
+    schema:
+      type: integer
+      default: 1
+    description: 'Page number for pagination'
+    example: 1
+  - in: query
+    name: perPage
+    schema:
+      type: integer
+      default: 12
+      example: 12
+    description: 'Number of articles per page'
+responses:
+  '200':
+    description: 'List of articles retrieved successfully'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found articles!
+            data:
+              type: object
+              required:
+                - articles
+                - page
+                - perPage
+                - totalItems
+                - totalPages
+                - hasNextPage
+                - hasPreviousPage
+              properties:
+                articles:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas/article.yaml'
+                page:
+                  type: integer
+                  example: 1
+                perPage:
+                  type: integer
+                  example: 12
+                totalItems:
+                  type: integer
+                  example: 90
+                totalPages:
+                  type: integer
+                  example: 9
+                hasNextPage:
+                  type: boolean
+                  example: false
+                hasPreviousPage:
+                  type: boolean
+                  example: true
+  '401':
+    $ref: '../../components/responses/401.yaml'

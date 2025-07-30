@@ -7,6 +7,8 @@ import pino from 'pino';
 import creatorsRouter from './routers/creators.js';
 import './models/Article.js';
 import articleRouter from './routers/articleRouters.js';
+import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const logger = pino({
   transport: {
@@ -20,8 +22,11 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('/uploads', express.static(UPLOAD_DIR));
+app.use('/api-docs', swaggerDocs());
+
 app.use('/api/auth', authRouter);
-app.use('/api/users', userRouter);     
+app.use('/api/users', userRouter);
 
 // app.use('/authors');
 app.use('/articles', articleRouter);
@@ -37,7 +42,7 @@ app.use((req, res) => {
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
-    status: "error",
+    status: 'error',
     message: err.message,
   });
 });
@@ -54,7 +59,3 @@ const setupServer = async () => {
 };
 
 export default setupServer;
-
-
-
-
