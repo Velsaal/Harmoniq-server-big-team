@@ -50,11 +50,11 @@ export const login = async (req, res) => {
 
 export const refresh = async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
-    const { accessToken, NewRefreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await refreshService(req.body);
-    res.cookie('refreshToken', refreshToken, {
+    const { accessToken, newRefreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await refreshService(refreshToken);
+    res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
-        expiresIn: refreshTokenExpiresIn,
-        samesite: 'strict',
+        expires: new Date(Date.now() + refreshTokenExpiresIn),
+        sameSite: 'strict',
     });
     res.status(200).json({
         status: 200,
