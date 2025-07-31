@@ -60,6 +60,10 @@ export const login = async (email, password) => {
     });
 
     return {
+        user: {
+            name: user.name,
+            avatarUrl: user.avatarUrl
+        },
         accessToken,
         refreshToken,
         accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,

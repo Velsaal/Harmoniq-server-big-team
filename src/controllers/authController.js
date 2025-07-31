@@ -31,7 +31,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
-    const { accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await loginService(email, password);
+    const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await loginService(email, password);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
@@ -40,7 +40,11 @@ export const login = async (req, res) => {
     res.status(200).json({
         status: 200,
         message: "User logged in successfully",
-        data: { accessToken }
+        data: { 
+            name: user.name,
+            avatarUrl: user.avatarUrl,
+            accessToken 
+        }
     });
 };
 
