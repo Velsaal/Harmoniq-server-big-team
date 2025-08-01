@@ -13,7 +13,7 @@ const articleSchema = new Schema(
     article: { type: String },
     rate: { type: Number, default: 0 },
     date: { type: String },
-    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    ownerId: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   {
     timestamps: true,
