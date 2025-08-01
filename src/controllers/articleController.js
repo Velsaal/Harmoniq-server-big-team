@@ -44,6 +44,11 @@ export const getArticleByIdController = async (req, res, next) => {
 };
 
 export const createArticleController = async (req, res, next) => {
+
+     if (!req.file) {
+    throw createHttpError(400, 'Image is required');
+  }
+
     const img = req.file;
     let imgUrl;
 
@@ -53,7 +58,7 @@ export const createArticleController = async (req, res, next) => {
 
     const article = await createArticle({
       ...req.body,
-      userId: req.user._id,
+      ownerId: req.user._id,
       img: imgUrl,
     });
 
@@ -66,8 +71,9 @@ export const createArticleController = async (req, res, next) => {
 
 export const deleteArticleController = async (req, res, next) => {  
     const { articleId } = req.params;
-    const userId = req.user._id;
-    const article = await deleteArticle(articleId, userId);
+  const ownerId = req.user._id;
+  const article = await deleteArticle(articleId, ownerId);
+  
 
     if (!article) {
       throw createHttpError(404, 'Article not found');
@@ -79,7 +85,7 @@ export const deleteArticleController = async (req, res, next) => {
 export const updateArticleController = async (req, res, next) => {
   
     const { articleId } = req.params;
-    const userId = req.user._id;
+    const ownerId = req.user._id;
     const img = req.file;
     let imgUrl;
 
@@ -87,7 +93,7 @@ export const updateArticleController = async (req, res, next) => {
       imgUrl = await saveFileToCloudinary(img);
     }
 
-    const result = await updateArticle(articleId, userId, {
+    const result = await updateArticle(articleId, ownerId, {
       ...req.body,
       img: imgUrl,
     });

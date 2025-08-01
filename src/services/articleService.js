@@ -27,14 +27,14 @@ export const createArticle = async (payload) => {
   return article;
 };
 
-export const deleteArticle = async (articleId, userId) => {
-  const article = await Article.findOneAndDelete({ _id: articleId, userId });
+export const deleteArticle = async (articleId, ownerId ) => {
+  const article = await Article.findOneAndDelete({ _id: articleId, ownerId });
   return article;
 };
 
-export const updateArticle = async (articleId, userId, payload, options = {}) => {
+export const updateArticle = async (articleId, ownerId, payload, options = {}) => {
   const rawResult = await Article.findOneAndUpdate(
-    { _id: articleId, userId },
+    { _id: articleId, ownerId },
     payload,
     {
       new: true,
