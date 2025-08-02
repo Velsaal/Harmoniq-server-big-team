@@ -12,7 +12,7 @@ export const register = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
-        samesite: 'strict',
+        samesite: 'none',
     });
     res.status(201).json({
         status: 201,
@@ -35,7 +35,7 @@ export const login = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
-        samesite: 'strict',
+        samesite: 'none',
     });
     res.status(200).json({
         status: 200,
@@ -54,7 +54,7 @@ export const refresh = async (req, res) => {
     res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         expires: new Date(Date.now() + refreshTokenExpiresIn),
-        sameSite: 'strict',
+        sameSite: 'none',
     });
     res.status(200).json({
         status: 200,

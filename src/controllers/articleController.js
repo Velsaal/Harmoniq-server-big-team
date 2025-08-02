@@ -58,6 +58,7 @@ export const createArticleController = async (req, res, next) => {
 
     const article = await createArticle({
       ...req.body,
+      author: req.user.name,
       ownerId: req.user._id,
       img: imgUrl,
     });
