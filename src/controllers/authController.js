@@ -2,6 +2,8 @@ import { register as registerService, login as loginService, refresh as refreshS
 import fs from "fs/promises";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
+const isProduction = process.env.NODE_ENV === "production";
+
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
     let avatarUrl = "";
@@ -12,7 +14,8 @@ export const register = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
-        samesite: 'none',
+        samesite: isProduction ? 'none' : 'lax',
+        secure: isProduction,
     });
     res.status(201).json({
         status: 201,
@@ -35,7 +38,8 @@ export const login = async (req, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         expiresIn: refreshTokenExpiresIn,
-        samesite: 'none',
+        samesite: isProduction ? 'none' : 'lax',
+        secure: isProduction,
     });
     res.status(200).json({
         status: 200,
@@ -53,8 +57,9 @@ export const refresh = async (req, res) => {
     const { accessToken, newRefreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await refreshService(refreshToken);
     res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
+        secure: isProduction,
         expires: new Date(Date.now() + refreshTokenExpiresIn),
-        sameSite: 'none',
+        sameSite: isProduction ? 'none' : 'lax',
     });
     res.status(200).json({
         status: 200,
