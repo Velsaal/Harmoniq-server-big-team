@@ -3,34 +3,47 @@ required:
   - _id
   - name
   - email
+  - password
 properties:
   _id:
-    description: "User's id"
     type: string
-    example: 688507eb52768403f159c9c2
+    description: User's unique ID
+    example: 64c8d958249fae54bae90bb9
   name:
-    description: "User's name"
     type: string
+    description: User's name
+    minLength: 2
+    maxLength: 32
     example: 'alicewow'
   email:
-    description: "User's email"
     type: string
-    example: qwerty123@gmail.com
+    description: User's email address
+    format: email
+    example: 'qwerty123@gmail.com'
+  password:
+    type: string
+    description: Hashed user password
+    minLength: 8
+    maxLength: 64
+    example: '$2b$10$e0MYzXyjpJS7Pd0RVvHwHe'
+  avatarUrl:
+    type: string
+    description: URL аватара користувача
+    example: 'https://example.com/avatar.jpg'
+  articlesAmount:
+    type: integer
+    description: Кількість статей користувача
+    default: 0
+    example: 5
   savedArticles:
-    description: 'Saved articles for User'
     type: array
+    description: Масив ID збережених статей користувача
     items:
       type: string
-      example: [68498236a100312bea078fe7, 688507eb52768403f159c9c2]
+      example: '68498236a100312bea078fe7'
   createdAt:
-    description: "User's creation date"
     type: string
-    example: '2025-07-25'
+    format: date-time
   updatedAt:
-    description: "User's change date"
     type: string
-    example: '2025-07-25'
-  avatarUrl:
-    description: "User's avatar URL"
-    type: string
-    example: 'https://example.com/avatar.jpg'
+    format: date-time

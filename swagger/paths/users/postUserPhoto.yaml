@@ -2,10 +2,11 @@ tags:
   - Users
 summary: Add user's avatar photo
 operationId: postUserAvatarPhoto
-description: "Add user's avatar photo"
+description: "Upload and add user's avatar photo"
 security:
   - bearerAuth: []
 requestBody:
+  required: true
   content:
     multipart/form-data:
       schema:
@@ -14,7 +15,7 @@ requestBody:
           - photo
         properties:
           photo:
-            description: "User's avatar photo"
+            description: "User's avatar photo file"
             type: string
             format: binary
 responses:
@@ -30,7 +31,7 @@ responses:
             - data
           properties:
             status:
-              type: integer
+              type: string
               example: 200
             message:
               type: string

@@ -18,59 +18,63 @@ servers:
 paths:
   /auth/register:
     post:
-      $ref: ../swagger/paths/auth/register.yaml
+      $ref: '../swagger/paths/auth/register.yaml'
   /auth/login:
     post:
-      $ref: ../swagger/paths/auth/login.yaml
+      $ref: '../swagger/paths/auth/login.yaml'
   /auth/logout:
     post:
-      $ref: ../swagger/paths/auth/logout.yaml
+      $ref: '../swagger/paths/auth/logout.yaml'
   /auth/refresh:
     post:
-      $ref: ../swagger/paths/auth/refresh.yaml
-  /auth/send-reset-email:
-    post:
-      $ref: ../swagger/paths/auth/send-reset-email.yaml
-  /auth/reset-pwd:
-    post:
-      $ref: ../swagger/paths/auth/reset-pwd.yaml
+      $ref: '../swagger/paths/auth/refresh.yaml'
 
   /articles:
     post:
-      $ref: ../swagger/paths/articles/post.yaml
+      $ref: '../swagger/paths/articles/post.yaml'
     get:
-      $ref: ../swagger/paths/articles/get.yaml
-  /articles/{id}:
+      $ref: '../swagger/paths/articles/get.yaml'
+  /articles/{articleId}:
     get:
-      $ref: ../swagger/paths/articles/{id}/get.yaml
+      $ref: '../swagger/paths/articles/{articleId}/get.yaml'
     patch:
-      $ref: ../swagger/paths/articles/{id}/patch.yaml
+      $ref: '../swagger/paths/articles/{articleId}/patch.yaml'
     delete:
-      $ref: ../swagger/paths/articles/{id}/delete.yaml
+      $ref: '../swagger/paths/articles/{articleId}/delete.yaml'
 
   /authors:
     get:
-      $ref: ../swagger/paths/users/getAllUsers.yaml
-  /authors/{id}:
+      $ref: '../swagger/paths/users/getAllUsers.yaml'
+  /authors/{userId}:
     get:
-      $ref: ../swagger/paths/users/{id}/getUsersById.yaml
-  /authors/{id}/saved-articles:
+      $ref: '../swagger/paths/users/{userId}/getUserById.yaml'
+  /authors/saved-articles/{userId}:
     get:
-      $ref: '../swagger/paths/users/{id}/getSavedArticlesById.yaml'
-  /authors/{id}/saved-articles/{articleId}:
+      $ref: '../swagger/paths/users/{userId}/getSavedArticlesById.yaml'
+  /authors/{userId}/saved-articles/{articleId}:
     patch:
-      $ref: ../swagger/paths/users/patchSavedArticlesById.yaml
+      $ref: '../swagger/paths/users/patchSavedArticlesById.yaml'
     delete:
       $ref: '../swagger/paths/users/deleteSavedArticlesById.yaml'
-  /authors/{id}/articles:
+  /authors/{userId}/articles:
     get:
-      $ref: ../swagger/paths/users/getArticlesById.yaml
+      $ref: '../swagger/paths/users/getArticlesById.yaml'
   /user/photo:
     post:
-      $ref: ../swagger/paths/users/postUserPhoto.yaml
+      $ref: '../swagger/paths/users/postUserPhoto.yaml'
 
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    users:
+      $ref: ../swagger/components/schemas/users.yaml
+    article:
+      $ref: '../swagger/components/schemas/article.yaml'
+  responses:
+    UnauthorizedError:
+      $ref: '../swagger/components/responses/401.yaml'
+    NotFoundError:
+      $ref: '../swagger/components/responses/404.yaml'

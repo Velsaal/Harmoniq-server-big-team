@@ -9,7 +9,7 @@ content:
         - data
       properties:
         status:
-          type: integer
+          type: string
           example: 409
         message:
           type: string

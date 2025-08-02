@@ -1,13 +1,13 @@
 tags:
   - Users
-summary: Add article to user's saved list
+summary: Patch user's saved article by id
 operationId: saveArticleByAuthorId
-description: "Add an article to the user's saved list by articleId"
+description: "Add an article to user's saved articles by user ID"
 security:
   - bearerAuth: []
 parameters:
   - in: path
-    name: id
+    name: userId
     required: true
     schema:
       type: string
@@ -17,10 +17,10 @@ parameters:
     required: true
     schema:
       type: string
-      example: '772a8103927c4f30b8d8c48a'
+      example: '65ca67e7ae7f10c88b598384'
 responses:
   '200':
-    description: 'Article added to saved list!'
+    description: 'Article added to saved!'
     content:
       application/json:
         schema:
@@ -31,14 +31,16 @@ responses:
             - data
           properties:
             status:
-              type: integer
+              type: string
               example: 200
             message:
               type: string
-              example: Article added to saved list!
+              example: Article added to saved!
             data:
-              $ref: ../../components/schemas/users.yaml
+              type: array
+              items:
+                $ref: '../../components/schemas/article.yaml'
   '401':
-    $ref: ../../components/responses/401.yaml
+    $ref: '../../components/responses/401.yaml'
   '404':
-    $ref: ../../components/responses/404.yaml
+    $ref: '../../components/responses/404.yaml'

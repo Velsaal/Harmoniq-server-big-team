@@ -2,12 +2,12 @@ tags:
   - Articles
 summary: Patch article
 operationId: patchArticle
-description: 'Update the article with payload'
+description: Update the article with payload
 security:
   - bearerAuth: []
 parameters:
   - in: path
-    name: id
+    name: articleId
     required: true
     schema:
       type: string
@@ -19,20 +19,15 @@ requestBody:
         type: object
         properties:
           title:
-            description: "Article's title"
             type: string
-            example: 'Some title'
-          desc:
-            description: "Article's description"
+          content:
             type: string
-            example: 'description lorem100'
-          photo:
-            description: "Article's photo"
+          img:
             type: string
             format: binary
 responses:
   '200':
-    description: 'Successfully patched the article!'
+    description: Successfully update an article!
     content:
       application/json:
         schema:
@@ -49,8 +44,7 @@ responses:
               type: string
               example: Successfully patched the article!
             data:
-              type: object
-              $ref: ../../../components/schemas/article.yaml
+              $ref: '../../../components/schemas/article.yaml'
   '401':
     $ref: '../../../components/responses/401.yaml'
   '404':

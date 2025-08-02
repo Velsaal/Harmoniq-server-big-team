@@ -1,20 +1,20 @@
 tags:
   - Users
-summary: Get user's saved articles by user ID
+summary: Get user's saved articles
 operationId: getSavedArticlesByAuthorId
-description: Get saved articles for a user by their ID
+description: "Get user's saved articles by user ID"
+security:
+  - bearerAuth: []
 parameters:
   - in: path
-    name: id
+    name: userId
     required: true
     schema:
       type: string
       example: '688507eb52768403f159c9c2'
-security:
-  - bearerAuth: []
 responses:
   '200':
-    description: Successfully retrieved saved articles
+    description: "Successfully found user's saved articles"
     content:
       application/json:
         schema:
@@ -25,7 +25,7 @@ responses:
             - data
           properties:
             status:
-              type: integer
+              type: string
               example: 200
             message:
               type: string
@@ -33,7 +33,7 @@ responses:
             data:
               type: array
               items:
-                $ref: ../../../components/schemas/users.yaml
+                $ref: ../../../components/schemas/article.yaml
   '401':
     $ref: ../../../components/responses/401.yaml
   '404':

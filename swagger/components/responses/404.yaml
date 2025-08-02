@@ -9,13 +9,13 @@ content:
         - data
       properties:
         status:
-          type: integer
+          type: string
           example: 404
         message:
           type: string
           example: NotFoundError
         data:
-          type: object
+          type: string
           required:
             - message
           properties:
