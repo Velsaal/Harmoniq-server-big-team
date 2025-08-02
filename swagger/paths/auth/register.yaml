@@ -47,28 +47,50 @@ responses:
             data:
               type: object
               required:
+                - _id
                 - name
                 - email
-                - _id
+                - avatarUrl
+                - articlesAmount
+                - savedArticles
                 - createdAt
                 - updatedAt
               properties:
-                name:
-                  type: string
-                  example: 'Carl Smith'
-                email:
-                  type: string
-                  example: 'my.mail@mail.com'
                 _id:
                   type: string
                   example: '65ca67e7ae7f10c88b598384'
+                  description: "User's id"
+                name:
+                  type: string
+                  example: 'Carl Smith'
+                  description: "User's name"
+                email:
+                  type: string
+                  example: 'my.mail@mail.com'
+                  description: "User's email"
+                avatarUrl:
+                  type: string
+                  example: 'https://example.com/avatar.jpg'
+                  description: "User's avatar URL"
+                articlesAmount:
+                  type: integer
+                  example: 0
+                  description: 'Number of articles created by user'
+                savedArticles:
+                  type: array
+                  items:
+                    type: string
+                    example: '68498236a100312bea078fe7'
+                  description: 'List of saved article IDs'
                 createdAt:
                   type: string
                   format: date-time
                   example: '2025-06-22T17:39:49.416Z'
+                  description: 'User creation date'
                 updatedAt:
                   type: string
                   format: date-time
                   example: '2025-06-22T17:39:49.416Z'
+                  description: 'User last update date'
   '409':
     $ref: '../../components/responses/409.yaml'

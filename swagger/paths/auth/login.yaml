@@ -42,10 +42,15 @@ responses:
             data:
               type: object
               required:
+                - name
+                - avatarUrl
                 - accessToken
               properties:
+                name:
+                  type: string
+                avatarUrl:
+                  type: string
                 accessToken:
                   type: string
-                  example: 'J6k5alkWa2rx55EkPirVRf/Gome5ecSqRYiqfuC2'
   '401':
     $ref: '../../components/responses/401.yaml'

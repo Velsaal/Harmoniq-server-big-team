@@ -1,19 +1,20 @@
 tags:
   - Users
-summary: Get user/author by id
-operationId: getUserById
-description: 'Get user/author by id'
-security: []
+summary: Get user's saved articles
+operationId: getSavedArticlesByAuthorId
+description: "Get user's saved articles by user ID"
+security:
+  - bearerAuth: []
 parameters:
   - in: path
-    name: id
+    name: userId
     required: true
     schema:
       type: string
       example: '688507eb52768403f159c9c2'
 responses:
   '200':
-    description: 'Successfully found user with id 688507eb52768403f159c9c2!'
+    description: "Successfully found user's saved articles"
     content:
       application/json:
         schema:
@@ -23,14 +24,14 @@ responses:
             - message
             - data
           properties:
-            status:
-              type: integer
-              example: 200
+            status: 'success'
             message:
               type: string
-              example: 'Successfully found user with id 688507eb52768403f159c9c2!'
+              example: "Successfully found user's saved articles!"
             data:
-              $ref: ../../../components/schemas/users.yaml
+              type: array
+              items:
+                $ref: ../../../components/schemas/article.yaml
   '401':
     $ref: ../../../components/responses/401.yaml
   '404':
