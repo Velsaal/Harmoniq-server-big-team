@@ -13,9 +13,9 @@ export const register = async (req, res) => {
     const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await registerService(name, email, password, avatarUrl);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        expiresIn: refreshTokenExpiresIn,
-        samesite: 'none',
         secure: true,
+        sameSite: 'none',
+        expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(201).json({
         status: 201,
@@ -37,9 +37,9 @@ export const login = async (req, res) => {
     const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await loginService(email, password);
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        expiresIn: refreshTokenExpiresIn,
-        samesite: 'none',
         secure: true,
+        sameSite: 'none',
+        expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(200).json({
         status: 200,
@@ -58,8 +58,8 @@ export const refresh = async (req, res) => {
     res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         secure: true,
-        expires: new Date(Date.now() + refreshTokenExpiresIn),
         sameSite: 'none',
+        expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(200).json({
         status: 200,
