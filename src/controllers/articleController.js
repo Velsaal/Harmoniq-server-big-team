@@ -8,14 +8,21 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
+import { parseSortParams } from "../utils/parseSortParams.js";
 
 export const getArticlesController = async (req, res, next) => {
   try {
     const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+
     const articles = await getArticles({
       page,
-      perPage
+      perPage,
+      sortBy,
+      sortOrder,
     });
+
+
 
     res.json({
       status: 200,

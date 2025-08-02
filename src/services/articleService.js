@@ -1,14 +1,23 @@
 import Article from "../models/Article.js";
 import { calculatePaginationData } from "../utils/calculatePaginationData.js";
+import { SORT_ORDER } from "../constants/index.js";
 
-export const getArticles = async ({ page, perPage }) => {
+export const getArticles = async ({
+  page,
+  perPage,
+  sortBy = 'rate',
+  sortOrder = SORT_ORDER.DESC,
+}) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
+ 
 
   const articlesQuery = Article.find();
   const articlesCount = await Article.find().merge(articlesQuery).countDocuments();
 
-  const articles = await articlesQuery.skip(skip).limit(limit).exec();
+  
+
+  const articles = await articlesQuery.skip(skip).limit(limit).sort({ [sortBy]: sortOrder }).exec();
   const paginationData = calculatePaginationData(articlesCount, perPage, page);
 
   return {
