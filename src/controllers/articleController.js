@@ -64,11 +64,12 @@ export const createArticleController = async (req, res, next) => {
 
     if (img) {
       imgUrl = await saveFileToCloudinary(img);
-    }
-
+  }
+  
     const article = await createArticle({
       ...req.body,
       author: req.user.name,
+      name: req.user.name,
       ownerId: req.user._id,
       img: imgUrl,
     });
