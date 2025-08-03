@@ -54,7 +54,7 @@ export const login = async (req, res) => {
 
 export const refresh = async (req, res) => {
     const refreshToken = req.cookies?.refreshToken;
-    const { accessToken, newRefreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await refreshService(refreshToken);
+    const { accessToken, newRefreshToken, accessTokenExpiresIn, refreshTokenExpiresIn, user } = await refreshService(refreshToken);
     res.cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
         secure: true,
