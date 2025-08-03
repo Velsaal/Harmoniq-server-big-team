@@ -7,17 +7,21 @@ export const getArticles = async ({
   perPage,
   sortBy = 'rate',
   sortOrder = SORT_ORDER.DESC,
+  filter = {},
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
- 
 
   const articlesQuery = Article.find();
-  const articlesCount = await Article.find().merge(articlesQuery).countDocuments();
-
   
+  if(filter.ownerId){articlesQuery.where('ownerId').equals(filter.ownerId);}
 
-  const articles = await articlesQuery.skip(skip).limit(limit).sort({ [sortBy]: sortOrder }).exec();
+  const [articles, articlesCount] = await Promise.all([
+    articlesQuery.clone().skip(skip).limit(limit).sort({ [sortBy]: sortOrder }).exec(),
+    articlesQuery.clone().countDocuments(),
+  ]);
+
+
   const paginationData = calculatePaginationData(articlesCount, perPage, page);
 
   return {
