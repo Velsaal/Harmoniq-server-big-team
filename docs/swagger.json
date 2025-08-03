@@ -25,7 +25,7 @@
     },
     {
       "name": "Users",
-      "description": "Operations about users/author."
+      "description": "Operations about users."
     }
   ],
   "paths": {
@@ -325,32 +325,42 @@
     "/articles": {
       "post": {
         "tags": [
-          "Auth"
+          "Articles"
         ],
-        "summary": "Login user",
+        "summary": "Create a new article",
         "operationId": "createArticle",
-        "description": "Login user with payload",
-        "security": [],
+        "description": "Create a new article",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "required": [
-                  "email",
-                  "password"
+                  "title",
+                  "content"
                 ],
                 "properties": {
-                  "email": {
-                    "description": "User's email",
+                  "title": {
                     "type": "string",
-                    "example": "my.mail@mail.com"
+                    "example": "New article"
                   },
-                  "password": {
-                    "description": "User's password",
+                  "content": {
                     "type": "string",
-                    "format": "password"
+                    "example": "This is the content of the article."
+                  },
+                  "img": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "desc": {
+                    "type": "string",
+                    "example": "Short description of the article"
                   }
                 }
               }
@@ -358,8 +368,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "User logged successfully",
+          "201": {
+            "description": "Article created successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -372,58 +382,14 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 200
+                      "example": 201
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully logged in a user!"
+                      "example": "Successfully created an article!"
                     },
                     "data": {
-                      "type": "object",
-                      "required": [
-                        "user",
-                        "accessToken",
-                        "refreshToken",
-                        "accessTokenExpiresIn",
-                        "refreshTokenExpiresIn"
-                      ],
-                      "properties": {
-                        "user": {
-                          "type": "object",
-                          "required": [
-                            "name",
-                            "avatarUrl"
-                          ],
-                          "properties": {
-                            "name": {
-                              "type": "string",
-                              "example": "alicewow"
-                            },
-                            "avatarUrl": {
-                              "type": "string",
-                              "example": "https://example.com/avatar.jpg"
-                            }
-                          }
-                        },
-                        "accessToken": {
-                          "type": "string",
-                          "example": "J6k5alkWa2rx55EkPirVRf/Gome5ecSqRYiqfuC2"
-                        },
-                        "refreshToken": {
-                          "type": "string",
-                          "example": "aabbccddeeff1122334455"
-                        },
-                        "accessTokenExpiresIn": {
-                          "type": "integer",
-                          "example": 900000,
-                          "description": "Expiration time in milliseconds"
-                        },
-                        "refreshTokenExpiresIn": {
-                          "type": "integer",
-                          "example": 2592000000,
-                          "description": "Expiration time in milliseconds"
-                        }
-                      }
+                      "$ref": "#/components/schemas/article"
                     }
                   }
                 }
@@ -720,12 +686,12 @@
         }
       }
     },
-    "/authors": {
+    "/users": {
       "get": {
         "tags": [
           "Users"
         ],
-        "summary": "Get all users/authors",
+        "summary": "Get all users",
         "operationId": "getAllUsers",
         "description": "Get all users",
         "security": [],
@@ -748,7 +714,7 @@
               "default": 20,
               "example": 20
             },
-            "description": "Number of users/authors per page"
+            "description": "Number of users per page"
           }
         ],
         "responses": {
@@ -827,7 +793,7 @@
         }
       }
     },
-    "/authors/{userId}": {
+    "/users/{userId}": {
       "get": {
         "tags": [
           "Users"
@@ -885,7 +851,7 @@
         }
       }
     },
-    "/authors/saved-articles/{userId}": {
+    "/users/{userId}/saved-articles": {
       "get": {
         "tags": [
           "Users"
@@ -950,7 +916,7 @@
         }
       }
     },
-    "/authors/{userId}/saved-articles/{articleId}": {
+    "/users/{userId}/saved-articles/{articleId}": {
       "patch": {
         "tags": [
           "Users"
@@ -1068,7 +1034,7 @@
         }
       }
     },
-    "/authors/{userId}/articles": {
+    "/users/{userId}/articles": {
       "get": {
         "tags": [
           "Users"

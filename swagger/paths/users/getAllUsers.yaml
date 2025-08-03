@@ -1,6 +1,6 @@
 tags:
   - Users
-summary: Get all users/authors
+summary: Get all users
 operationId: getAllUsers
 description: 'Get all users'
 security: []
@@ -18,7 +18,7 @@ parameters:
       type: integer
       default: 20
       example: 20
-    description: 'Number of users/authors per page'
+    description: 'Number of users per page'
 responses:
   '200':
     description: 'Successfully found users!'

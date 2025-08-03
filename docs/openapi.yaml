@@ -12,7 +12,7 @@ tags:
   - name: Auth
     description: Auth operations.
   - name: Users
-    description: Operations about users/author.
+    description: Operations about users.
 servers:
   - url: https://harmoniq-server-big-team.onrender.com
 paths:
@@ -42,21 +42,21 @@ paths:
     delete:
       $ref: '../swagger/paths/articles/{articleId}/delete.yaml'
 
-  /authors:
+  /users:
     get:
       $ref: '../swagger/paths/users/getAllUsers.yaml'
-  /authors/{userId}:
+  /users/{userId}:
     get:
       $ref: '../swagger/paths/users/{userId}/getUserById.yaml'
-  /authors/saved-articles/{userId}:
+  /users/{userId}/saved-articles:
     get:
       $ref: '../swagger/paths/users/{userId}/getSavedArticlesById.yaml'
-  /authors/{userId}/saved-articles/{articleId}:
+  /users/{userId}/saved-articles/{articleId}:
     patch:
       $ref: '../swagger/paths/users/patchSavedArticlesById.yaml'
     delete:
       $ref: '../swagger/paths/users/deleteSavedArticlesById.yaml'
-  /authors/{userId}/articles:
+  /users/{userId}/articles:
     get:
       $ref: '../swagger/paths/users/getArticlesById.yaml'
   /user/photo:
