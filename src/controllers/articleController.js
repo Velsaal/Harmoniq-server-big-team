@@ -9,17 +9,20 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from "../utils/parsePaginationParams.js";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
+import { parseFilterParams } from "../utils/parseFilterParams.js";
 
 export const getArticlesController = async (req, res, next) => {
   try {
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseFilterParams(req.query);
 
     const articles = await getArticles({
       page,
       perPage,
       sortBy,
       sortOrder,
+      filter,
     });
 
 
@@ -61,11 +64,12 @@ export const createArticleController = async (req, res, next) => {
 
     if (img) {
       imgUrl = await saveFileToCloudinary(img);
-    }
-
+  }
+  
     const article = await createArticle({
       ...req.body,
       author: req.user.name,
+      name: req.user.name,
       ownerId: req.user._id,
       img: imgUrl,
     });
