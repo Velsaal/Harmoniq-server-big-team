@@ -71,7 +71,7 @@ export const login = async (email, password) => {
     }; 
 };
 
-export const refresh = async (refreshToken) => { 
+export const refresh = async (refreshToken) => {     
     if (!refreshToken) {
         throw createHttpError(401, 'No refresh token provided');
       }
@@ -99,11 +99,18 @@ export const refresh = async (refreshToken) => {
         accessTokenValidUntil: new Date(now + ACCESS_TOKEN_EXPIRES_IN),
         refreshTokenValidUntil: new Date(now + REFRESH_TOKEN_EXPIRES_IN),
       });
+
+      const user = await User.findById(session.userId);
       return {
         accessToken,
         newRefreshToken,
         accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
         refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
+        user: {
+            name: user.name,
+            email: user.email,
+            avatarUrl: user.avatarUrl
+        }
       };
     };
 
