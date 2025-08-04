@@ -10,7 +10,6 @@ const authMiddleware = async (req, res, next) => {
             throw createHttpError(401, 'Unauthorized');
         }
 
-        // Пошук сесії по accessToken
         const session = await Session.findOne({ accessToken: token });
         if (!session) {
             throw createHttpError(401, 'Invalid access token');
