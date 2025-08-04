@@ -15,6 +15,7 @@ export const register = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        path: '/',
         expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(201).json({
@@ -39,6 +40,7 @@ export const login = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        path: '/',
         expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(200).json({
@@ -60,6 +62,7 @@ export const refresh = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
+        path: '/',
         expires: new Date(Date.now() + refreshTokenExpiresIn),
     });
     res.status(200).json({
@@ -78,12 +81,22 @@ export const logout = async (req, res) => {
     const authHeader = req.headers.authorization || '';
     const [type, accessToken] = authHeader.split(' ');
     if (type !== 'Bearer' || !accessToken) {
-        return res.status(401).json({ message: 'No token provided' });
+      return res.status(401).json({ message: 'No token provided' });
     }
+  
     await logoutService(accessToken);
-    res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
-    res.status(200).json();
-};
+  
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
+  
+    res.status(200).json({
+        status: 200,
+        message: "Logged out successfully"
+    });
+  };
 
 export default { register, login, refresh, logout };
