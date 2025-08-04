@@ -44,7 +44,8 @@ export const login = async (req, res) => {
     res.status(200).json({
         status: 200,
         message: "User logged in successfully",
-        data: { 
+        data: {  
+            _id: user._id,
             name: user.name,
             avatarUrl: user.avatarUrl,
             accessToken 
