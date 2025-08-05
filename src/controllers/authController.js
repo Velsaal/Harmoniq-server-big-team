@@ -68,8 +68,7 @@ export const refresh = async (req, res) => {
     res.status(200).json({
         status: 200,
         message: "Session refreshed successfully",
-        data: { 
-                _id: user._id,
+        data: {
                 name: user.name,
                 email: user.email,
                 avatarUrl: user.avatarUrl,
