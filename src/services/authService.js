@@ -61,6 +61,7 @@ export const login = async (email, password) => {
 
     return {
         user: {
+            _id: user._id,
             name: user.name,
             avatarUrl: user.avatarUrl
         },
@@ -107,6 +108,7 @@ export const refresh = async (refreshToken) => {
         accessTokenExpiresIn: ACCESS_TOKEN_EXPIRES_IN,
         refreshTokenExpiresIn: REFRESH_TOKEN_EXPIRES_IN,
         user: {
+            _id: user._id,
             name: user.name,
             email: user.email,
             avatarUrl: user.avatarUrl
