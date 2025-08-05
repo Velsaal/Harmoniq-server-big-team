@@ -407,7 +407,7 @@
         ],
         "summary": "Get list of articles",
         "operationId": "getArticles",
-        "description": "Get list of articles with pagination",
+        "description": "Get list of articles with pagination, sorting and filtering",
         "security": [
           {
             "bearerAuth": []
@@ -433,6 +433,43 @@
             },
             "description": "Number of articles per page",
             "example": 12
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "rate",
+                "date",
+                "title"
+              ],
+              "default": "rate"
+            },
+            "description": "Field by which to sort the articles",
+            "example": "rate"
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "description": "Sorting order",
+            "example": "desc"
+          },
+          {
+            "in": "query",
+            "name": "ownerId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter articles by ownerId"
           }
         ],
         "responses": {
