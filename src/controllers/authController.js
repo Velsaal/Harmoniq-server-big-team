@@ -1,16 +1,19 @@
 import { register as registerService, login as loginService, refresh as refreshService, logout as logoutService } from "../services/authService.js";
-import fs from "fs/promises";
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
-
-// const isProduction = process.env.NODE_ENV === "production";
 
 export const register = async (req, res) => {
     const { name, email, password } = req.body;
-    let avatarUrl = "";
+    let avatarUrl;
     if (req.file) {
         avatarUrl = await saveFileToCloudinary(req.file);
     }
-    const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = await registerService(name, email, password, avatarUrl);
+    let serviceResult;
+    if (avatarUrl) {
+        serviceResult = await registerService(name, email, password, avatarUrl);
+    } else {
+        serviceResult = await registerService(name, email, password);
+    }
+    const { user, accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn } = serviceResult;
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,
