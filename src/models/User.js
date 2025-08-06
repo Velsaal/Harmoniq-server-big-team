@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
     avatarUrl: {
       type: String,
-      default: '',
+      default: '/default-avatar.jpg',
     },
     articlesAmount: {
       type: Number,
