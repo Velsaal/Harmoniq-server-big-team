@@ -1,5 +1,6 @@
 import createError from "http-errors";
 import User from "../models/User.js";
+import Article from "../models/Article.js";
 
 
 export const getUserInfo = async (req, res, next) => {
@@ -61,7 +62,16 @@ export const addArticleToSaved = async (req, res, next) => {
       throw createError(400, "Article already saved");
     }
     user.savedArticles.push(articleId);
+    
+
+    const article = await Article.findById(articleId);
+    if (article) {
+      article.rate += 1;
+      await article.save();
+    }
+    
     await user.save();
+
     res.json({
       status: "success",
       message: "Article added to saved",
@@ -75,6 +85,7 @@ export const addArticleToSaved = async (req, res, next) => {
 
 export const removeArticleFromSaved = async (req, res, next) => {
   try {
+   
     const userId = req.params.userId;
     const { articleId } = req.params;
 
@@ -89,7 +100,16 @@ export const removeArticleFromSaved = async (req, res, next) => {
     if (user.savedArticles.length === initialLength) {
       throw createError(404, "Article not in saved list");
     }
+
+    
+    const article = await Article.findById(articleId);
+    if (article && article.rate > 0) {
+      article.rate -= 1;
+      await article.save(); 
+    }
+
     await user.save();
+
     res.json({
       status: "success",
       message: "Article removed from saved",
