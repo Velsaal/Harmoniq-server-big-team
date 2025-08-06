@@ -1,8 +1,8 @@
 tags:
   - Users
-summary: Add user's avatar photo
-operationId: postUserAvatarPhoto
-description: "Upload and add user's avatar photo"
+summary: Update user information
+operationId: patchUser
+description: Update user data by user ID
 security:
   - bearerAuth: []
 parameters:
@@ -11,23 +11,20 @@ parameters:
     required: true
     schema:
       type: string
-    description: 'The ID of the user to upload avatar for'
+    description: 'The ID of the user to update'
 requestBody:
   required: true
   content:
-    multipart/form-data:
+    application/json:
       schema:
         type: object
-        required:
-          - avatar
         properties:
-          avatar:
-            description: "User's avatar photo file"
+          name:
             type: string
-            format: binary
+            example: 'Alice Wonder'
 responses:
   '200':
-    description: 'User avatar photo added successfully'
+    description: User updated successfully
     content:
       application/json:
         schema:
@@ -42,10 +39,10 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully added user avatar photo!
+              example: Successfully updated user information!
             data:
-              $ref: ../../components/schemas/users.yaml
+              $ref: ../../../components/schemas/users.yaml
   '401':
-    $ref: ../../components/responses/401.yaml
+    $ref: ../../../components/responses/401.yaml
   '404':
-    $ref: ../../components/responses/404.yaml
+    $ref: ../../../components/responses/409.yaml
