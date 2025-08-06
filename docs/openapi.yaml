@@ -48,18 +48,20 @@ paths:
   /users/{userId}:
     get:
       $ref: '../swagger/paths/users/{userId}/getUserById.yaml'
+    patch:
+      $ref: '../swagger/paths/users/{userId}/patchUser.yaml'
   /users/{userId}/saved-articles:
     get:
       $ref: '../swagger/paths/users/{userId}/getSavedArticlesById.yaml'
   /users/{userId}/saved-articles/{articleId}:
-    patch:
-      $ref: '../swagger/paths/users/patchSavedArticlesById.yaml'
+    post:
+      $ref: '../swagger/paths/users/postSavedArticlesById.yaml'
     delete:
       $ref: '../swagger/paths/users/deleteSavedArticlesById.yaml'
   /users/{userId}/articles:
     get:
       $ref: '../swagger/paths/users/getArticlesById.yaml'
-  /user/photo:
+  /users/{userId}/avatar:
     post:
       $ref: '../swagger/paths/users/postUserPhoto.yaml'
 
