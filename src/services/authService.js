@@ -7,17 +7,13 @@ import createHttpError from "http-errors";
 const ACCESS_TOKEN_EXPIRES_IN = 15 * 60 * 1000;
 const REFRESH_TOKEN_EXPIRES_IN = 30 * 24 * 60 * 60 * 1000;
 
-export const register = async (name, email, password, avatarUrl) => {
+export const register = async (name, email, password, avatarUrl = "") => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
         throw createHttpError(400, 'User already exists');
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userData = { name, email, password: hashedPassword };
-    if (avatarUrl) {
-        userData.avatarUrl = avatarUrl;
-    }
-    const user = await User.create(userData);
+    const user = await User.create({ name, email, password: hashedPassword, avatarUrl });
 
     const accessToken = crypto.randomUUID();
     const refreshToken = crypto.randomUUID();
