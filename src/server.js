@@ -19,8 +19,10 @@ const logger = pino({
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173', 
-  'https://big-team.vercel.app' 
+  'http://localhost:5173',
+  'http://localhost:5176',
+  'https://big-team.vercel.app',
+  'http://95.217.129.211'
 ];
 
 app.use(cors({
