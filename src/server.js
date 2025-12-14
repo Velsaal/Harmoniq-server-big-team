@@ -1,7 +1,7 @@
 /* global process */
 import express from "express";
 import pino from "pino";
-import http from "http"; // <-- ДОБАВЛЕНО
+import http from "http";
 
 import userRouter from "./routers/usersRouters.js";
 import authRouter from "./routers/authRouters.js";
@@ -20,41 +20,30 @@ const logger = pino({
 const app = express();
 
 /* ------------------------------------------------------------------
- *                    ГАРАНТИРОВАННО РАБОТАЮЩИЙ CORS
+ *              🔥 ЖЁСТКИЙ GLOBAL CORS + PREFLIGHT FIX
  * ------------------------------------------------------------------ */
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5176",
-  "http://localhost:5178",
-  "https://big-team.vercel.app",
-  "http://95.217.129.211:3000",
-];
-
-// ДОЛЖЕН СТОЯТЬ ПЕРВЫМ МИДДЛВАРОМ!
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader(
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   );
+  res.header("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
-    return res.status(200).end();
+    return res.sendStatus(204);
   }
 
   next();
 });
 
 /* ------------------------------------------------------------------
- *                   СТАНДАРТНЫЕ МИДДЛВАРЫ
+ *                     СТАНДАРТНЫЕ МИДДЛВАРЫ
  * ------------------------------------------------------------------ */
 
 app.use(express.json());
@@ -71,7 +60,7 @@ app.use("/api/articles", articleRouter);
 app.use("/api/creators", creatorsRouter);
 
 /* ------------------------------------------------------------------
- *                              404
+ *                               404
  * ------------------------------------------------------------------ */
 
 app.use((req, res) => {
@@ -99,10 +88,10 @@ app.use((err, req, res, next) => {
 });
 
 /* ------------------------------------------------------------------
- *                             SERVER (IPv4 FIX)
+ *                              SERVER
  * ------------------------------------------------------------------ */
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 const setupServer = async () => {
   return new Promise((resolve) => {
@@ -112,10 +101,10 @@ const setupServer = async () => {
       {
         host: "0.0.0.0",
         port: PORT,
-        family: 4, // <-- ПРИНУДИТЕЛЬНО IPv4
+        family: 4,
       },
       () => {
-        logger.info(`🚀 Server running on IPv4 at port ${PORT}`);
+        logger.info(`🚀 Server running on port ${PORT}`);
         resolve(app);
       }
     );
@@ -123,6 +112,7 @@ const setupServer = async () => {
 };
 
 export default setupServer;
+
 
 
 
