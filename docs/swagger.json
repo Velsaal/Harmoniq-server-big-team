@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://harmoniq-server-big-team.onrender.com"
+      "url": "http://95.217.129.211:4000/api"
     }
   ],
   "tags": [
@@ -26,14 +26,16 @@
     {
       "name": "Users",
       "description": "Operations about users."
+    },
+    {
+      "name": "Creators",
+      "description": "Operations about creators."
     }
   ],
   "paths": {
     "/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Register user",
         "operationId": "registerUser",
         "description": "Register user with payload",
@@ -43,11 +45,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "email",
-                  "password"
-                ],
+                "required": ["name", "email", "password"],
                 "properties": {
                   "name": {
                     "description": "User`s name",
@@ -76,16 +74,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 201
-                    },
+                    "status": { "type": "integer", "example": 201 },
                     "message": {
                       "type": "string",
                       "example": "Successfully registered a user!"
@@ -155,17 +146,14 @@
               }
             }
           },
-          "409": {
-            "$ref": "#/components/responses/409"
-          }
+          "409": { "$ref": "#/components/responses/409" }
         }
       }
     },
+
     "/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Login user",
         "operationId": "loginUser",
         "description": "Login user with payload",
@@ -175,10 +163,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
+                "required": ["email", "password"],
                 "properties": {
                   "email": {
                     "description": "User`s email",
@@ -202,37 +187,20 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully logged in an user!"
                     },
                     "data": {
                       "type": "object",
-                      "required": [
-                        "name",
-                        "avatarUrl",
-                        "accessToken"
-                      ],
+                      "required": ["name", "avatarUrl", "accessToken"],
                       "properties": {
-                        "name": {
-                          "type": "string"
-                        },
-                        "avatarUrl": {
-                          "type": "string"
-                        },
-                        "accessToken": {
-                          "type": "string"
-                        }
+                        "name": { "type": "string" },
+                        "avatarUrl": { "type": "string" },
+                        "accessToken": { "type": "string" }
                       }
                     }
                   }
@@ -240,48 +208,32 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          }
+          "401": { "$ref": "#/components/responses/401" }
         }
       }
     },
+
     "/auth/logout": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Logout user",
         "operationId": "logoutUser",
         "description": "Logout user",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "responses": {
-          "200": {
-            "description": "User logged out successfully"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          }
+          "200": { "description": "User logged out successfully" },
+          "401": { "$ref": "#/components/responses/401" }
         }
       }
     },
+
     "/auth/refresh": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Refresh user session",
         "operationId": "refreshUserSession",
         "description": "Refresh user session and get new access token",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": {
             "description": "User's session refreshed successfully",
@@ -289,16 +241,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully refreshed user session!"
@@ -306,9 +251,7 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "accessToken": {
-                          "type": "string"
-                        }
+                        "accessToken": { "type": "string" }
                       }
                     }
                   }
@@ -316,48 +259,97 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
+          "401": { "$ref": "#/components/responses/401" }
+        }
+      }
+    },
+
+    "/* ===================== CREATORS (ADDED) ===================== */": {},
+
+    "/creators/all": {
+      "get": {
+        "tags": ["Creators"],
+        "summary": "Get all creators",
+        "operationId": "getAllCreators",
+        "description": "Returns list of all creators with articlesAmount",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Creators list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "avatarUrl": { "type": "string" },
+                      "email": { "type": "string" },
+                      "articlesAmount": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
+
+    "/creators/top-creators": {
+      "get": {
+        "tags": ["Creators"],
+        "summary": "Get top creators",
+        "operationId": "getTopCreators",
+        "description": "Returns top 6 creators",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Top creators",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": { "type": "string" },
+                      "name": { "type": "string" },
+                      "avatarUrl": { "type": "string" },
+                      "articlesAmount": { "type": "integer" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/articles": {
       "post": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Create a new article",
         "operationId": "createArticle",
         "description": "Create a new article",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "title",
-                  "content"
-                ],
+                "required": ["title", "content"],
                 "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "New article"
-                  },
+                  "title": { "type": "string", "example": "New article" },
                   "content": {
                     "type": "string",
                     "example": "This is the content of the article."
                   },
-                  "img": {
-                    "type": "string",
-                    "format": "binary"
-                  },
+                  "img": { "type": "string", "format": "binary" },
                   "desc": {
                     "type": "string",
                     "example": "Short description of the article"
@@ -374,63 +366,41 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 201
-                    },
+                    "status": { "type": "integer", "example": 201 },
                     "message": {
                       "type": "string",
                       "example": "Successfully created an article!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/article"
-                    }
+                    "data": { "$ref": "#/components/schemas/article" }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          }
+          "401": { "$ref": "#/components/responses/401" }
         }
       },
+
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get list of articles",
         "operationId": "getArticles",
         "description": "Get list of articles with pagination, sorting and filtering",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "query",
             "name": "page",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            },
+            "schema": { "type": "integer", "default": 1 },
             "description": "Page number for pagination",
             "example": 1
           },
           {
             "in": "query",
             "name": "perPage",
-            "schema": {
-              "type": "integer",
-              "default": 12
-            },
+            "schema": { "type": "integer", "default": 12 },
             "description": "Number of articles per page",
             "example": 12
           },
@@ -439,11 +409,7 @@
             "name": "sortBy",
             "schema": {
               "type": "string",
-              "enum": [
-                "rate",
-                "date",
-                "title"
-              ],
+              "enum": ["rate", "date", "title"],
               "default": "rate"
             },
             "description": "Field by which to sort the articles",
@@ -454,10 +420,7 @@
             "name": "sortOrder",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
+              "enum": ["asc", "desc"],
               "default": "desc"
             },
             "description": "Sorting order",
@@ -466,9 +429,7 @@
           {
             "in": "query",
             "name": "ownerId",
-            "schema": {
-              "type": "string"
-            },
+            "schema": { "type": "string" },
             "description": "Filter articles by ownerId"
           }
         ],
@@ -479,16 +440,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found articles!"
@@ -507,34 +461,14 @@
                       "properties": {
                         "data": {
                           "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/article"
-                          }
+                          "items": { "$ref": "#/components/schemas/article" }
                         },
-                        "page": {
-                          "type": "integer",
-                          "example": 1
-                        },
-                        "perPage": {
-                          "type": "integer",
-                          "example": 12
-                        },
-                        "totalItems": {
-                          "type": "integer",
-                          "example": 90
-                        },
-                        "totalPages": {
-                          "type": "integer",
-                          "example": 9
-                        },
-                        "hasNextPage": {
-                          "type": "boolean",
-                          "example": false
-                        },
-                        "hasPreviousPage": {
-                          "type": "boolean",
-                          "example": true
-                        }
+                        "page": { "type": "integer", "example": 1 },
+                        "perPage": { "type": "integer", "example": 12 },
+                        "totalItems": { "type": "integer", "example": 90 },
+                        "totalPages": { "type": "integer", "example": 9 },
+                        "hasNextPage": { "type": "boolean", "example": false },
+                        "hasPreviousPage": { "type": "boolean", "example": true }
                       }
                     }
                   }
@@ -542,34 +476,24 @@
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          }
+          "401": { "$ref": "#/components/responses/401" }
         }
       }
     },
+
     "/articles/{articleId}": {
       "get": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Get article by id",
         "operationId": "getArticleById",
         "description": "Get article by id",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "articleId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+            "schema": { "type": "string", "example": "65ca67e7ae7f10c88b598384" }
           }
         ],
         "responses": {
@@ -579,54 +503,35 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found article with id 65ca67e7ae7f10c88b598384!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/article"
-                    }
+                    "data": { "$ref": "#/components/schemas/article" }
                   }
                 }
               }
             }
           },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "404": { "$ref": "#/components/responses/404" }
         }
       },
+
       "patch": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Patch article",
         "operationId": "patchArticle",
         "description": "Update the article with payload",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "articleId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+            "schema": { "type": "string", "example": "65ca67e7ae7f10c88b598384" }
           }
         ],
         "requestBody": {
@@ -635,16 +540,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "title": {
-                    "type": "string"
-                  },
-                  "content": {
-                    "type": "string"
-                  },
-                  "img": {
-                    "type": "string",
-                    "format": "binary"
-                  }
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "img": { "type": "string", "format": "binary" }
                 }
               }
             }
@@ -657,77 +555,49 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully patched the article!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/article"
-                    }
+                    "data": { "$ref": "#/components/schemas/article" }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       },
+
       "delete": {
-        "tags": [
-          "Articles"
-        ],
+        "tags": ["Articles"],
         "summary": "Delete article",
         "operationId": "deleteArticle",
         "description": "Delete article with given id",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "articleId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+            "schema": { "type": "string", "example": "65ca67e7ae7f10c88b598384" }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Article delete"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "204": { "description": "Article delete" },
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     },
+
     "/users": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get all users",
         "operationId": "getAllUsers",
         "description": "Get all users",
@@ -736,21 +606,14 @@
           {
             "in": "query",
             "name": "page",
-            "schema": {
-              "type": "integer",
-              "default": 1
-            },
+            "schema": { "type": "integer", "default": 1 },
             "description": "Page number for pagination",
             "example": 1
           },
           {
             "in": "query",
             "name": "perPage",
-            "schema": {
-              "type": "integer",
-              "default": 20,
-              "example": 20
-            },
+            "schema": { "type": "integer", "default": 20, "example": 20 },
             "description": "Number of users per page"
           }
         ],
@@ -761,16 +624,9 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": 200
-                    },
+                    "status": { "type": "string", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found users!"
@@ -789,34 +645,14 @@
                       "properties": {
                         "users": {
                           "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/users"
-                          }
+                          "items": { "$ref": "#/components/schemas/users" }
                         },
-                        "page": {
-                          "type": "string",
-                          "example": 1
-                        },
-                        "perPage": {
-                          "type": "string",
-                          "example": 20
-                        },
-                        "totalItems": {
-                          "type": "string",
-                          "example": 50
-                        },
-                        "totalPages": {
-                          "type": "string",
-                          "example": 5
-                        },
-                        "hasNextPage": {
-                          "type": "boolean",
-                          "example": false
-                        },
-                        "hasPreviousPage": {
-                          "type": "boolean",
-                          "example": true
-                        }
+                        "page": { "type": "string", "example": 1 },
+                        "perPage": { "type": "string", "example": 20 },
+                        "totalItems": { "type": "string", "example": 50 },
+                        "totalPages": { "type": "string", "example": 5 },
+                        "hasNextPage": { "type": "boolean", "example": false },
+                        "hasPreviousPage": { "type": "boolean", "example": true }
                       }
                     }
                   }
@@ -824,17 +660,14 @@
               }
             }
           },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     },
+
     "/users/{userId}": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user/author by id",
         "operationId": "getUserById",
         "description": "Get user/author by id",
@@ -844,10 +677,7 @@
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "688507eb52768403f159c9c2"
-            }
+            "schema": { "type": "string", "example": "688507eb52768403f159c9c2" }
           }
         ],
         "responses": {
@@ -857,56 +687,36 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": 200
-                    },
+                    "status": { "type": "string", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found user with id 688507eb52768403f159c9c2!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/users"
-                    }
+                    "data": { "$ref": "#/components/schemas/users" }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       },
+
       "patch": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Update user information",
         "operationId": "patchUser",
         "description": "Update user data by user ID",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
+            "schema": { "type": "string" },
             "description": "The ID of the user to update"
           }
         ],
@@ -917,10 +727,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "example": "Alice Wonder"
-                  }
+                  "name": { "type": "string", "example": "Alice Wonder" }
                 }
               }
             }
@@ -933,59 +740,38 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully updated user information!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/users"
-                    }
+                    "data": { "$ref": "#/components/schemas/users" }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/409"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/409" }
         }
       }
     },
+
     "/users/{userId}/saved-articles": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get user's saved articles",
         "operationId": "getSavedArticlesByAuthorId",
         "description": "Get user's saved articles by user ID",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "688507eb52768403f159c9c2"
-            }
+            "schema": { "type": "string", "example": "688507eb52768403f159c9c2" }
           }
         ],
         "responses": {
@@ -995,71 +781,47 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": 200
-                    },
+                    "status": { "type": "string", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found user's saved articles!"
                     },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/article"
-                      }
+                      "items": { "$ref": "#/components/schemas/article" }
                     }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     },
+
     "/users/{userId}/saved-articles/{articleId}": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Patch user's saved article by id",
         "operationId": "saveArticleByAuthorId",
         "description": "Add an article to user's saved articles by user ID",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "688507eb52768403f159c9c2"
-            }
+            "schema": { "type": "string", "example": "688507eb52768403f159c9c2" }
           },
           {
             "in": "path",
             "name": "articleId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+            "schema": { "type": "string", "example": "65ca67e7ae7f10c88b598384" }
           }
         ],
         "responses": {
@@ -1069,89 +831,55 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Article added to saved!"
-                    },
+                    "status": { "type": "string", "example": 200 },
+                    "message": { "type": "string", "example": "Article added to saved!" },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/article"
-                      }
+                      "items": { "$ref": "#/components/schemas/article" }
                     }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       },
+
       "delete": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Delete user's saved article by articleId",
         "operationId": "removeSavedArticleFromSavedList",
         "description": "Delete a saved article from user's saved articles by userId and articleId",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "688507eb52768403f159c9c2"
-            }
+            "schema": { "type": "string", "example": "688507eb52768403f159c9c2" }
           },
           {
             "in": "path",
             "name": "articleId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "65ca67e7ae7f10c88b598384"
-            }
+            "schema": { "type": "string", "example": "65ca67e7ae7f10c88b598384" }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Article removed from saved list"
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "204": { "description": "Article removed from saved list" },
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     },
+
     "/users/{userId}/articles": {
       "get": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Get own articles",
         "operationId": "getOwnArticlesByAuthorId",
         "description": "Get own articles by user ID",
@@ -1161,10 +889,7 @@
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string",
-              "example": "688507eb52768403f159c9c2"
-            }
+            "schema": { "type": "string", "example": "688507eb52768403f159c9c2" }
           }
         ],
         "responses": {
@@ -1174,58 +899,40 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": 200
-                    },
+                    "status": { "type": "string", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully found user's own articles with id 688507eb52768403f159c9c2!"
                     },
                     "data": {
                       "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/article"
-                      }
+                      "items": { "$ref": "#/components/schemas/article" }
                     }
                   }
                 }
               }
             }
           },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     },
+
     "/users/{userId}/avatar": {
       "post": {
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "summary": "Add user's avatar photo",
         "operationId": "postUserAvatarPhoto",
         "description": "Upload and add user's avatar photo",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [{ "bearerAuth": [] }],
         "parameters": [
           {
             "in": "path",
             "name": "userId",
             "required": true,
-            "schema": {
-              "type": "string"
-            },
+            "schema": { "type": "string" },
             "description": "The ID of the user to upload avatar for"
           }
         ],
@@ -1235,9 +942,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "avatar"
-                ],
+                "required": ["avatar"],
                 "properties": {
                   "avatar": {
                     "description": "User's avatar photo file",
@@ -1256,38 +961,26 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "required": ["status", "message", "data"],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
+                    "status": { "type": "integer", "example": 200 },
                     "message": {
                       "type": "string",
                       "example": "Successfully added user avatar photo!"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/users"
-                    }
+                    "data": { "$ref": "#/components/schemas/users" }
                   }
                 }
               }
             }
           },
-          "401": {
-            "$ref": "#/components/responses/401"
-          },
-          "404": {
-            "$ref": "#/components/responses/404"
-          }
+          "401": { "$ref": "#/components/responses/401" },
+          "404": { "$ref": "#/components/responses/404" }
         }
       }
     }
   },
+
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -1298,12 +991,7 @@
     "schemas": {
       "users": {
         "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "email",
-          "password"
-        ],
+        "required": ["_id", "name", "email", "password"],
         "properties": {
           "_id": {
             "type": "string",
@@ -1344,32 +1032,16 @@
           "savedArticles": {
             "type": "array",
             "description": "Масив ID збережених статей користувача",
-            "items": {
-              "type": "string",
-              "example": "68498236a100312bea078fe7"
-            }
+            "items": { "type": "string", "example": "68498236a100312bea078fe7" }
           },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
+
       "article": {
         "type": "object",
-        "required": [
-          "_id",
-          "title",
-          "img",
-          "desc",
-          "rate",
-          "ownerId",
-          "date"
-        ],
+        "required": ["_id", "title", "img", "desc", "rate", "ownerId", "date"],
         "properties": {
           "_id": {
             "description": "Article's id",
@@ -1391,11 +1063,7 @@
             "type": "string",
             "example": "description lorem100"
           },
-          "rate": {
-            "description": "Article's rate",
-            "type": "number",
-            "example": 0
-          },
+          "rate": { "description": "Article's rate", "type": "number", "example": 0 },
           "ownerId": {
             "description": "Id of the user who created the article",
             "type": "string",
@@ -1406,14 +1074,11 @@
             "type": "string",
             "example": "John Doe"
           },
-          "date": {
-            "description": "Article's creation date",
-            "type": "string",
-            "example": "2025-07-25"
-          }
+          "date": { "description": "Article's creation date", "type": "string", "example": "2025-07-25" }
         }
       }
     },
+
     "responses": {
       "401": {
         "description": "Unauthorized",
@@ -1421,30 +1086,15 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
+              "required": ["status", "message", "data"],
               "properties": {
-                "status": {
-                  "type": "integer",
-                  "example": 401
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Unauthorized"
-                },
+                "status": { "type": "integer", "example": 401 },
+                "message": { "type": "string", "example": "Unauthorized" },
                 "data": {
                   "type": "object",
-                  "required": [
-                    "message"
-                  ],
+                  "required": ["message"],
                   "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Access token expired"
-                    }
+                    "message": { "type": "string", "example": "Access token expired" }
                   }
                 }
               }
@@ -1452,36 +1102,22 @@
           }
         }
       },
+
       "404": {
         "description": "NotFound error",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
+              "required": ["status", "message", "data"],
               "properties": {
-                "status": {
-                  "type": "string",
-                  "example": 404
-                },
-                "message": {
-                  "type": "string",
-                  "example": "NotFoundError"
-                },
+                "status": { "type": "string", "example": 404 },
+                "message": { "type": "string", "example": "NotFoundError" },
                 "data": {
                   "type": "string",
-                  "required": [
-                    "message"
-                  ],
+                  "required": ["message"],
                   "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Article not found"
-                    }
+                    "message": { "type": "string", "example": "Article not found" }
                   }
                 }
               }
@@ -1489,49 +1125,30 @@
           }
         }
       },
+
       "409": {
         "description": "Conflict error",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "status",
-                "message",
-                "data"
-              ],
+              "required": ["status", "message", "data"],
               "properties": {
-                "status": {
-                  "type": "string",
-                  "example": 409
-                },
-                "message": {
-                  "type": "string",
-                  "example": "ConflictError"
-                },
+                "status": { "type": "string", "example": 409 },
+                "message": { "type": "string", "example": "ConflictError" },
                 "data": {
                   "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Email in use"
-                    }
-                  }
+                  "required": ["message"],
+                  "properties": { "message": { "type": "string", "example": "Email in use" } }
                 }
               }
             }
           }
         }
       },
-      "UnauthorizedError": {
-        "$ref": "#/components/responses/401"
-      },
-      "NotFoundError": {
-        "$ref": "#/components/responses/404"
-      }
+
+      "UnauthorizedError": { "$ref": "#/components/responses/401" },
+      "NotFoundError": { "$ref": "#/components/responses/404" }
     }
   }
 }

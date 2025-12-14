@@ -10,6 +10,8 @@ import articleRouter from "./routers/articleRouters.js";
 import "./models/Article.js";
 import { UPLOAD_DIR } from "./constants/index.js";
 import { swaggerDocs } from "./middlewares/swaggerDocs.js";
+const app = express();
+console.log("✅ SERVER.JS LOADED, ROUTES SHOULD BE HERE");
 
 const logger = pino({
   transport: {
@@ -17,7 +19,7 @@ const logger = pino({
   },
 });
 
-const app = express();
+
 
 /* ------------------------------------------------------------------
  *              🔥 ЖЁСТКИЙ GLOBAL CORS + PREFLIGHT FIX

@@ -1,5 +1,6 @@
 import express from 'express';
 import { getTopCreators, getAllCreators } from '../controllers/creatorsController.js';
+console.log("🔥 creators router loaded");
 
 const router = express.Router();
 
