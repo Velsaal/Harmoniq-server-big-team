@@ -1,87 +1,123 @@
 /* global process */
-import express from "express";
-import pino from "pino";
+import userRouter from './routers/usersRouters.js';
+import authRouter from './routers/authRouters.js';
+import express from 'express';
+import pino from 'pino';
+import creatorsRouter from './routers/creators.js';
+import './models/Article.js';
+import articleRouter from './routers/articleRouters.js';
+import { UPLOAD_DIR } from './constants/index.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
-import userRouter from "./routers/usersRouters.js";
-import authRouter from "./routers/authRouters.js";
-import creatorsRouter from "./routers/creators.js";
-import articleRouter from "./routers/articleRouters.js";
-import "./models/Article.js";
-import { UPLOAD_DIR } from "./constants/index.js";
-import { swaggerDocs } from "./middlewares/swaggerDocs.js";
+const logger = pino({
+  transport: {
+    target: 'pino-pretty',
+  },
+});
 
 const app = express();
-const logger = pino({ transport: { target: "pino-pretty" } });
 
-// ===== TEST ROUTE =====
-app.get("/api/__test", (req, res) => res.json({ ok: true }));
+/* ------------------------------------------------------------------
+ *                         ABSOLUTELY WORKING CORS
+ * ------------------------------------------------------------------ */
 
-// ===== CORS =====
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5176',
+  'http://localhost:5178',
+  'https://big-team.vercel.app',
+  'http://95.217.129.211:3000', // <<< ВАЖНО: backend origin
+];
+
+// Глобальный CORS middleware
 app.use((req, res, next) => {
-  const allowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:5176",
-    "https://big-team.vercel.app",
-    "http://95.217.129.211",
-  ];
+  const origin = req.headers.origin;
 
-  if (!req.headers.origin || allowedOrigins.includes(req.headers.origin)) {
-    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
   }
 
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET,POST,PUT,PATCH,DELETE,OPTIONS'
   );
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type, Authorization'
   );
-  res.header("Access-Control-Allow-Credentials", "true");
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-  if (req.method === "OPTIONS") return res.sendStatus(204);
+  // preflight
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
   next();
 });
 
-// ===== MIDDLEWARES =====
+/* ------------------------------------------------------------------
+ *                         STANDARD MIDDLEWARE
+ * ------------------------------------------------------------------ */
+
 app.use(express.json());
-app.use("/uploads", express.static(UPLOAD_DIR));
-app.use("/api-docs", swaggerDocs());
 
-// ===== ROUTES =====
-app.use("/api/auth", authRouter);
-app.use("/api/users", userRouter);
-app.use("/api/articles", articleRouter);
-app.use("/api/creators", creatorsRouter);
+app.use('/uploads', express.static(UPLOAD_DIR));
+app.use('/api-docs', swaggerDocs());
 
-// ===== 404 =====
-app.use((req, res) => res.status(404).json({ message: "Not Found" }));
+/* ------------------------------------------------------------------
+ *                              ROUTES
+ * ------------------------------------------------------------------ */
 
-// ===== ERROR HANDLER =====
-app.use((err, req, res) => {
-  if (err.code === "LIMIT_FILE_SIZE") {
-    return res
-      .status(400)
-      .json({ status: "error", message: "Image too large. Max size is 1MB." });
-  }
-  res
-    .status(err.status || 500)
-    .json({ status: "error", message: err.message || "Server error" });
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/articles', articleRouter);
+app.use('/api/creators', creatorsRouter);
+
+/* ------------------------------------------------------------------
+ *                            404 HANDLER
+ * ------------------------------------------------------------------ */
+
+app.use((req, res) => {
+  res.status(404).json({
+    message: 'Not Found',
+  });
 });
 
-// ===== START SERVER =====
+/* ------------------------------------------------------------------
+ *                           ERROR HANDLER
+ * ------------------------------------------------------------------ */
+
+app.use((err, req, res, next) => {
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Image too large. Max size is 1MB.',
+    });
+  }
+
+  res.status(err.status || 500).json({
+    status: 'error',
+    message: err.message,
+  });
+});
+
+/* ------------------------------------------------------------------
+ *                               SERVER
+ * ------------------------------------------------------------------ */
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  logger.info(`🚀 Server running on port ${PORT}`);
-});
+const setupServer = async () => {
+  return new Promise((resolve) => {
+    // ВАЖНО! 0.0.0.0 — чтобы принимать внешние запросы
+    app.listen(PORT, '0.0.0.0', () => {
+      logger.info(`Server is running on port ${PORT}`);
+      resolve(app);
+    });
+  });
+};
 
-export default app;
-
-
-
-
-
+export default setupServer;
 
 
 
