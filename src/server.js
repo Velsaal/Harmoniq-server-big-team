@@ -117,7 +117,8 @@ const setupServer = async () => {
   });
 };
 
-export default setupServer;
+export default app;
+
 
 
 
