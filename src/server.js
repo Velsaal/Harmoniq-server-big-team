@@ -107,18 +107,24 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-const setupServer = async () => {
-  return new Promise((resolve) => {
-    // ВАЖНО! 0.0.0.0 — чтобы принимать внешние запросы
-    app.listen(PORT, '0.0.0.0', () => {
-      logger.info(`Server is running on port ${PORT}`);
-      resolve(app);
-    });
+const setupServer = () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    logger.info(`Server is running on port ${PORT}`);
   });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      logger.error(`Port ${PORT} is already in use`);
+    } else {
+      logger.error(err);
+    }
+    process.exit(1);
+  });
+
+  return server;
 };
 
-export default app;
-
+export default setupServer;
 
 
 
