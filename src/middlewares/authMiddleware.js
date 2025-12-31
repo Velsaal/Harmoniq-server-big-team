@@ -1,33 +1,50 @@
 import createHttpError from "http-errors";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import Session from "../models/session.js";
 
 const authMiddleware = async (req, res, next) => {
-    try {
-        const authHeader = req.headers.authorization || '';
-        const [type, token] = authHeader.split(' ');
-        if (type !== 'Bearer' || !token) {
-            throw createHttpError(401, 'Unauthorized');
-        }
+  // 🔥 ОБЯЗАТЕЛЬНО: пропускаем preflight
+  if (req.method === "OPTIONS") {
+    return next();
+  }
 
-        const session = await Session.findOne({ accessToken: token });
-        if (!session) {
-            throw createHttpError(401, 'Invalid access token');
-        }
-        if (session.accessTokenValidUntil < new Date()) {
-            await Session.deleteOne({ _id: session._id });
-            throw createHttpError(401, 'Access token expired');
-        }
+  try {
+    const authHeader = req.headers.authorization || "";
+    const [type, token] = authHeader.split(" ");
 
-        const user = await User.findById(session.userId);
-        if (!user) {
-            throw createHttpError(401, 'User not found');
-        }
-        req.user = user;
-        next();
-    } catch (error) {
-        next(error);
+    if (type !== "Bearer" || !token) {
+      return next(createHttpError(401, "Unauthorized"));
     }
+
+    if (!process.env.JWT_SECRET) {
+      return next(createHttpError(500, "JWT_SECRET is not set"));
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return next(createHttpError(401, "Invalid or expired token"));
+    }
+
+    const userId =
+      payload.id || payload._id || payload.userId || payload.sub;
+
+    if (!userId) {
+      return next(createHttpError(401, "Invalid token payload"));
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(createHttpError(401, "User not found"));
+    }
+
+    req.user = user;
+    return next();
+  } catch (err) {
+    return next(err);
+  }
 };
 
 export default authMiddleware;
+

@@ -1,118 +1,175 @@
-import { 
-  register as registerService, 
-  login as loginService, 
-  refresh as refreshService, 
-  logout as logoutService 
+import createHttpError from "http-errors";
+
+import {
+  register as registerService,
+  login as loginService,
+  refresh as refreshService,
+  logout as logoutService,
 } from "../services/authService.js";
+
 import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 
-export const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  let avatarUrl = "";
+/* ===================== REGISTER ===================== */
+export const register = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+    let avatarUrl = "";
 
-  if (req.file) {
-    avatarUrl = await saveFileToCloudinary(req.file);
+    if (req.file) {
+      avatarUrl = await saveFileToCloudinary(req.file);
+    }
+
+    const { user, accessToken, refreshToken, refreshTokenExpiresIn } =
+      await registerService(name, email, password, avatarUrl);
+
+    res.status(201).json({
+      status: 201,
+      message: "User registered successfully",
+      data: {
+        accessToken,
+        refreshToken,
+        refreshTokenExpiresIn,
+
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
   }
-
-  const { 
-    user, 
-    accessToken, 
-    refreshToken,
-    refreshTokenExpiresIn 
-  } = await registerService(name, email, password, avatarUrl);
-
-  // ❗ БОЛЬШЕ НИКАКИХ COOKIES
-  // refreshToken отправляем в JSON
-
-  res.status(201).json({
-    status: 201,
-    message: "User registered successfully",
-    data: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-
-      accessToken,
-      refreshToken,          // <----- ДАЁМ ФРОНТУ!
-      refreshTokenExpiresIn, // <----- тоже фронту (если надо)
-    },
-  });
 };
 
-export const login = async (req, res) => {
-  const { email, password } = req.body;
+/* ===================== LOGIN ===================== */
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-  const { 
-    user, 
-    accessToken, 
-    refreshToken,
-    refreshTokenExpiresIn
-  } = await loginService(email, password);
+    const { user, accessToken, refreshToken, refreshTokenExpiresIn } =
+      await loginService(email, password);
 
-  // ❗ НЕТ COOKIES
+    res.status(200).json({
+      status: 200,
+      message: "User logged in successfully",
+      data: {
+        accessToken,
+        refreshToken,
+        refreshTokenExpiresIn,
 
-  res.status(200).json({
-    status: 200,
-    message: "User logged in successfully",
-    data: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
 
-      accessToken,
-      refreshToken,
-      refreshTokenExpiresIn,
-    },
-  });
-};
-
-export const refresh = async (req, res) => {
-  // ❗ ТЕПЕРЬ refreshToken ИДЁТ В BODY, КАК НА ФРОНТЕ
-  const { refreshToken } = req.body;
-
-  const { 
-    accessToken, 
-    newRefreshToken, 
-    refreshTokenExpiresIn, 
-    user 
-  } = await refreshService(refreshToken);
-
-  res.status(200).json({
-    status: 200,
-    message: "Session refreshed successfully",
-    data: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      avatarUrl: user.avatarUrl,
-
-      accessToken,
-      refreshToken: newRefreshToken,     // <--- возвращаем новый!
-      refreshTokenExpiresIn,
-    },
-  });
-};
-
-export const logout = async (req, res) => {
-  const authHeader = req.headers.authorization || "";
-  const [type, accessToken] = authHeader.split(" ");
-
-  if (type !== "Bearer" || !accessToken) {
-    return res.status(401).json({ message: "No token provided" });
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
   }
+};
 
-  await logoutService(accessToken);
+/* ===================== REFRESH ===================== */
+export const refresh = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
 
-  // ❗ И НИЧЕГО НЕ ЧИСТИМ — НЕТ COOKIE
+    if (!refreshToken) {
+      throw createHttpError(401, "No refresh token");
+    }
+
+    const { accessToken, newRefreshToken, refreshTokenExpiresIn, user } =
+      await refreshService(refreshToken);
+
+    res.status(200).json({
+      status: 200,
+      message: "Session refreshed successfully",
+      data: {
+        accessToken,
+        refreshToken: newRefreshToken,
+        refreshTokenExpiresIn,
+
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===================== CURRENT ===================== */
+export const current = async (req, res) => {
+  const user = req.user;
 
   res.status(200).json({
     status: 200,
-    message: "Logged out successfully",
+    data: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      avatarUrl: user.avatarUrl,
+
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatarUrl,
+      },
+    },
   });
 };
 
-export default { register, login, refresh, logout };
+/* ===================== LOGOUT ===================== */
+export const logout = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || "";
+    const [type, accessToken] = authHeader.split(" ");
+
+    if (type === "Bearer" && accessToken) {
+      await logoutService(accessToken);
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/* ===================== EXPORT (🔥 ОБЯЗАТЕЛЬНО) ===================== */
+export default {
+  register,
+  login,
+  refresh,
+  current,
+  logout,
+};

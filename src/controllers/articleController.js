@@ -37,7 +37,7 @@ export const getArticlesController = async (req, res, next) => {
   }
 };
 
-export const getArticleByIdController = async (req, res, next) => {
+export const getArticleByIdController = async (req, res) => {
   
     const { articleId } = req.params;
     const article = await getArticleById(articleId);
@@ -81,7 +81,7 @@ export const createArticleController = async (req, res, next) => {
     });
 };
 
-export const deleteArticleController = async (req, res, next) => {  
+export const deleteArticleController = async (req, res) => {  
     const { articleId } = req.params;
   const ownerId = req.user._id;
   const article = await deleteArticle(articleId, ownerId);
@@ -94,7 +94,7 @@ export const deleteArticleController = async (req, res, next) => {
     res.status(204).send();
 };
 
-export const updateArticleController = async (req, res, next) => {
+export const updateArticleController = async (req, res) => {
   
     const { articleId } = req.params;
     const ownerId = req.user._id;
