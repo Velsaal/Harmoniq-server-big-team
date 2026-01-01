@@ -8,7 +8,7 @@ import {
 } from "../services/authService.js";
 
 import { saveFileLocally } from "../utils/saveFileLocally.js";
-
+console.log('🔥 AUTH CONTROLLER LOADED FROM SRC');
 /* ===================== REGISTER ===================== */
 export const register = async (req, res, next) => {
   try {
