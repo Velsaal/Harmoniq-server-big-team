@@ -1,6 +1,10 @@
 
 import multer from 'multer';
+import fs from 'node:fs';
 import { TEMP_UPLOAD_DIR } from '../constants/index.js';
+
+// гарантируем наличие временной директории для загрузок
+fs.mkdirSync(TEMP_UPLOAD_DIR, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
