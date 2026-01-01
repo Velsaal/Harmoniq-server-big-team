@@ -7,7 +7,7 @@ import {
   logout as logoutService,
 } from "../services/authService.js";
 
-import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
+import { saveFileLocally } from "../utils/saveFileLocally.js";
 
 /* ===================== REGISTER ===================== */
 export const register = async (req, res, next) => {
@@ -16,8 +16,10 @@ export const register = async (req, res, next) => {
     let avatarUrl = "";
 
     if (req.file) {
-      avatarUrl = await saveFileToCloudinary(req.file);
+      avatarUrl = await saveFileLocally(req.file);
     }
+
+    // дальше код регистрации пользователя
 
     const { user, accessToken, refreshToken, refreshTokenExpiresIn } =
       await registerService(name, email, password, avatarUrl);

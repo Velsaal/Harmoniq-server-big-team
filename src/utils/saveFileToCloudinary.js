@@ -1,13 +1,12 @@
-import fs from 'node:fs/promises';
+import fs from 'fs/promises';
+import path from 'path';
+import { UPLOAD_DIR } from '../constants/index.js';
 
-export const saveFileToCloudinary = async (file) => {
-  console.log("⚠️ Cloudinary disabled — returning local file path instead.");
+export const saveFileLocally = async (file) => {
+  const destinationPath = path.join(UPLOAD_DIR, file.filename);
 
-  // Просто возвращаем путь к файлу (или любой фейковый URL)
-  const fakeUrl = `/uploads/${file.originalname}`;
+  // переносим файл из temp → uploads
+  await fs.rename(file.path, destinationPath);
 
-  // Удаляем временный файл, чтобы не копился мусор
-  await fs.unlink(file.path);
-
-  return fakeUrl;
+  return `/uploads/${file.filename}`;
 };
