@@ -1,6 +1,7 @@
 import createError from "http-errors";
 import User from "../models/User.js";
 import Article from "../models/Article.js";
+import { saveFileLocally } from "../utils/saveFileLocally.js";
 
 
 export const getUserInfo = async (req, res, next) => {
@@ -150,11 +151,17 @@ export const updateUserInfo = async (req, res, next) => {
 export const uploadUserAvatar = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const { avatarUrl } = req.body;
+    const requestingUserId = req.user?._id?.toString();
 
-    if (!avatarUrl) {
-      throw createError(400, "No avatar provided");
+    if (!req.file) {
+      throw createError(400, "No avatar file provided");
     }
+
+    if (requestingUserId && requestingUserId !== userId) {
+      throw createError(403, "Forbidden: cannot update another user's avatar");
+    }
+
+    const avatarUrl = await saveFileLocally(req.file);
 
     const user = await User.findByIdAndUpdate(
       userId,
