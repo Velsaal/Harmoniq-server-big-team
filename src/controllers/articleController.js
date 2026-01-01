@@ -11,6 +11,7 @@ import { saveFileToCloudinary } from "../utils/saveFileToCloudinary.js";
 import { parseSortParams } from "../utils/parseSortParams.js";
 import { parseFilterParams } from "../utils/parseFilterParams.js";
 
+/* ================= GET ALL ================= */
 export const getArticlesController = async (req, res, next) => {
   try {
     const { page, perPage } = parsePaginationParams(req.query);
@@ -25,8 +26,6 @@ export const getArticlesController = async (req, res, next) => {
       filter,
     });
 
-
-
     res.json({
       status: 200,
       message: 'Successfully found articles!',
@@ -37,35 +36,33 @@ export const getArticlesController = async (req, res, next) => {
   }
 };
 
+/* ================= GET BY ID ================= */
 export const getArticleByIdController = async (req, res) => {
-  
-    const { articleId } = req.params;
-    const article = await getArticleById(articleId);
+  const { articleId } = req.params;
 
-    if (!article) {
-      throw createHttpError(404, 'Article not found');
-    }
+  const article = await getArticleById(articleId);
+  if (!article) {
+    throw createHttpError(404, 'Article not found');
+  }
 
-    res.json({
-      status: 200,
-      message: `Successfully found article with id ${articleId}!`,
-      data: article,
-    });
+  res.json({
+    status: 200,
+    message: `Successfully found article with id ${articleId}!`,
+    data: article,
+  });
 };
 
+/* ================= CREATE ================= */
 export const createArticleController = async (req, res, next) => {
+  try {
+    // 🔒 КАРТИНКА ОБЯЗАТЕЛЬНА
+    if (!req.file) {
+      throw createHttpError(400, 'Image is required');
+    }
 
-     if (!req.file) {
-    throw createHttpError(400, 'Image is required');
-  }
+    // загружаем картинку
+    const imgUrl = await saveFileToCloudinary(req.file);
 
-    const img = req.file;
-    let imgUrl;
-
-    if (img) {
-      imgUrl = await saveFileToCloudinary(img);
-  }
-  
     const article = await createArticle({
       ...req.body,
       author: req.user.name,
@@ -76,48 +73,49 @@ export const createArticleController = async (req, res, next) => {
 
     res.status(201).json({
       status: 201,
-      message: `Successfully created an article!`,
+      message: 'Successfully created an article!',
       data: article,
     });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const deleteArticleController = async (req, res) => {  
-    const { articleId } = req.params;
+/* ================= DELETE ================= */
+export const deleteArticleController = async (req, res) => {
+  const { articleId } = req.params;
   const ownerId = req.user._id;
+
   const article = await deleteArticle(articleId, ownerId);
-  
+  if (!article) {
+    throw createHttpError(404, 'Article not found');
+  }
 
-    if (!article) {
-      throw createHttpError(404, 'Article not found');
-    }
-
-    res.status(204).send();
+  res.status(204).send();
 };
 
+/* ================= UPDATE ================= */
 export const updateArticleController = async (req, res) => {
-  
-    const { articleId } = req.params;
-    const ownerId = req.user._id;
-    const img = req.file;
-    let imgUrl;
+  const { articleId } = req.params;
+  const ownerId = req.user._id;
 
-    if (img) {
-      imgUrl = await saveFileToCloudinary(img);
-    }
+  let imgUrl;
+  if (req.file) {
+    imgUrl = await saveFileToCloudinary(req.file);
+  }
 
-    const result = await updateArticle(articleId, ownerId, {
-      ...req.body,
-      img: imgUrl,
-    });
+  const result = await updateArticle(articleId, ownerId, {
+    ...req.body,
+    ...(imgUrl && { img: imgUrl }),
+  });
 
-    if (!result) {
-      throw createHttpError(404, 'Article not found');
-    }
+  if (!result) {
+    throw createHttpError(404, 'Article not found');
+  }
 
-    res.json({
-      status: 200,
-      message: `Successfully update an article!`,
-      data: result.article,
-    });
-  
+  res.json({
+    status: 200,
+    message: 'Successfully update an article!',
+    data: result.article,
+  });
 };
