@@ -1,13 +1,20 @@
 import dotenv from 'dotenv';
-import './server.js';
+import setupServer from './server.js';
 import InitMongoConnection from './db/InitMongoConnection.js';
 
 dotenv.config();
 
-InitMongoConnection().catch(err => {
-  console.error('Mongo error:', err);
-  process.exit(1);
-});
+const startServer = async () => {
+  try {
+    await InitMongoConnection();
+    await setupServer();
+  } catch (err) {
+    console.error('Startup error:', err);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 
 
