@@ -153,14 +153,15 @@ export const uploadUserAvatar = async (req, res, next) => {
     const userId = req.params.userId;
     const requestingUserId = req.user?._id?.toString();
 
-    if (!req.file) {
-      throw createError(400, "No avatar file provided");
-    }
-
     if (requestingUserId && requestingUserId !== userId) {
       throw createError(403, "Forbidden: cannot update another user's avatar");
     }
 
+    if (!req.file) {
+      throw createError(400, "Avatar file is required");
+    }
+
+    // сохраняем файл на сервере и получаем URL для клиента
     const avatarUrl = await saveFileLocally(req.file);
 
     const user = await User.findByIdAndUpdate(
@@ -173,10 +174,10 @@ export const uploadUserAvatar = async (req, res, next) => {
       throw createError(404, "User not found");
     }
 
-    res.json({
+    res.status(200).json({
       status: "success",
       message: "Avatar updated",
-      data: user,
+      data: { avatarUrl, user },
     });
   } catch (error) {
     next(error);
