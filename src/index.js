@@ -7,7 +7,7 @@ dotenv.config();
 const startServer = async () => {
   try {
     await InitMongoConnection();
-    await setupServer(); // ✅ ОДИН раз и с await
+    await setupServer(); // сначала подключение к БД, потом старт сервера
   } catch (err) {
     console.error('Startup error:', err);
     process.exit(1);
@@ -15,4 +15,3 @@ const startServer = async () => {
 };
 
 startServer();
-

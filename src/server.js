@@ -4,16 +4,24 @@ import pino from 'pino';
 const logger = pino();
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, '0.0.0.0', () => {
-  logger.info(`Server running on port ${PORT}`);
-});
+/**
+ * Запускает HTTP-сервер и возвращает промис с инстансом.
+ * Используем промис, чтобы `await` в index.js ждал старт сервера.
+ */
+const startServer = () =>
+  new Promise((resolve, reject) => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
+      logger.info(`Server running on port ${PORT}`);
+      resolve(server);
+    });
 
-server.on('error', (err) => {
-  logger.error(err);
-  process.exit(1);
-});
+    server.on('error', (err) => {
+      logger.error(err);
+      reject(err);
+    });
+  });
 
-export default server;
+export default startServer;
 
 
 
