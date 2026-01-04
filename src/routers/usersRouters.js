@@ -2,7 +2,6 @@ import { Router } from "express";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/upload.js";
-import validateBody from "../middlewares/validateBody.js";
 
 import {
   getUserInfo,
@@ -10,12 +9,18 @@ import {
   addArticleToSaved,
   removeArticleFromSaved,
   updateUserInfo,
-  updateUserBio,
   uploadUserAvatar,
+  getCurrentUser
 } from "../controllers/userController.js";
-import { updateBioSchema } from "../validation/userValidation.js";
 
 const userRouter = Router();
+
+/* 🔥 CURRENT — СТРОГО ПЕРВЫЙ */
+userRouter.get(
+  "/current",
+  authMiddleware,
+  ctrlWrapper(getCurrentUser)
+);
 
 /* ===== Saved articles ===== */
 userRouter.get(
@@ -44,22 +49,14 @@ userRouter.post(
   ctrlWrapper(uploadUserAvatar)
 );
 
-/* ===== Update user ===== */
+/* ===== Update user (bio тоже тут) ===== */
 userRouter.patch(
   "/:userId",
   authMiddleware,
   ctrlWrapper(updateUserInfo)
 );
 
-/* ===== Bio ===== */
-userRouter.patch(
-  "/:userId/bio",
-  authMiddleware,
-  validateBody(updateBioSchema),
-  ctrlWrapper(updateUserBio)
-);
-
-/* ===== Get user info (ВСЕГДА В КОНЦЕ) ===== */
+/* ⚠️ ВСЕГДА ПОСЛЕДНИЙ */
 userRouter.get(
   "/:userId",
   authMiddleware,

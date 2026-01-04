@@ -12,8 +12,9 @@ import {
   login,
   refresh,
   logout,
-  current,
 } from "../controllers/authController.js";
+
+import { getCurrentUser } from "../controllers/userController.js";
 
 const authRouter = Router();
 
@@ -29,9 +30,12 @@ authRouter.post("/login", ctrlWrapper(login));
 authRouter.post("/refresh", ctrlWrapper(refresh));
 authRouter.post("/logout", ctrlWrapper(logout));
 
-
-/* ===================== CURRENT (🔥 ОБЯЗАТЕЛЬНО) ===================== */
-authRouter.get("/current", authMiddleware, ctrlWrapper(current));
+/* ===================== CURRENT ===================== */
+authRouter.get(
+  "/current",
+  authMiddleware,
+  ctrlWrapper(getCurrentUser)
+);
 
 export default authRouter;
 

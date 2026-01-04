@@ -17,15 +17,20 @@ app.use(
 );
 
 app.options(/.*/, cors());
-
 app.use(express.json());
 
-/* ✅ СТАТИКА — НАДЁЖНО */
+/* ✅ СТАТИКА */
 app.use(
   "/uploads",
   express.static(path.join(process.cwd(), "uploads"))
 );
 
+/* 🔥 ТЕСТ: ДОКАЗЫВАЕТ, ЧТО ЭТОТ app.js ИСПОЛЬЗУЕТСЯ */
+app.get("/__test", (req, res) => {
+  res.send("APP IS THIS ONE");
+});
+
+/* ===== ROUTERS ===== */
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/articles", articleRouter);

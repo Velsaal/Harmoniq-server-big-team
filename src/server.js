@@ -1,6 +1,6 @@
 import app from './app.js';
 import pino from 'pino';
-
+console.log("🔥 REAL APP.JS LOADED 🔥", import.meta.url);
 const logger = pino();
 const PORT = process.env.PORT || 3000;
 

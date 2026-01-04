@@ -213,4 +213,30 @@ export const uploadUserAvatar = async (req, res, next) => {
     next(error);
   }
 };
+/**
+ * GET /api/auth/current
+ * Return current authorized user
+ */
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    if (!req.user) {
+      throw createError(401, "Unauthorized");
+    }
+
+    res.json({
+      status: "success",
+      data: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email,
+        avatarUrl: req.user.avatarUrl,
+        bio: req.user.bio,
+        articlesAmount: req.user.articlesAmount,
+        savedArticles: req.user.savedArticles,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
