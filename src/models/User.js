@@ -21,6 +21,11 @@ const userSchema = new Schema(
       minlength: 8,
       maxlength: 64,
     },
+    bio: {
+      type: String,
+      maxlength: 1000,
+      default: '',
+    },
     avatarUrl: {
       type: String,
       default: '/default-avatar.jpg',

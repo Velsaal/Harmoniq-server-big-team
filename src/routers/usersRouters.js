@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
-import { upload } from "../middlewares/multer.js";
+import upload from "../middlewares/upload.js";
+import validateBody from "../middlewares/validateBody.js";
 
 import {
   getUserInfo,
@@ -9,8 +10,10 @@ import {
   addArticleToSaved,
   removeArticleFromSaved,
   updateUserInfo,
+  updateUserBio,
   uploadUserAvatar,
 } from "../controllers/userController.js";
+import { updateBioSchema } from "../validation/userValidation.js";
 
 const userRouter = Router();
 
@@ -46,6 +49,14 @@ userRouter.patch(
   "/:userId",
   authMiddleware,
   ctrlWrapper(updateUserInfo)
+);
+
+/* ===== Bio ===== */
+userRouter.patch(
+  "/:userId/bio",
+  authMiddleware,
+  validateBody(updateBioSchema),
+  ctrlWrapper(updateUserBio)
 );
 
 /* ===== Get user info (ВСЕГДА В КОНЦЕ) ===== */
