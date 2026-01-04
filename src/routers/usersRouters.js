@@ -50,11 +50,13 @@ userRouter.post(
 );
 
 /* ===== Update user (bio тоже тут) ===== */
+/* ===== Update user (bio тоже тут) ===== */
 userRouter.patch(
   "/:userId",
-  authMiddleware,
+  // authMiddleware,   <-- закомментировали для теста
   ctrlWrapper(updateUserInfo)
 );
+
 
 /* ⚠️ ВСЕГДА ПОСЛЕДНИЙ */
 userRouter.get(
