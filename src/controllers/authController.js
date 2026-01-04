@@ -42,6 +42,7 @@ export const register = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        bio: user.bio,
         avatarUrl: user.avatarUrl,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
@@ -81,6 +82,7 @@ export const login = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        bio: user.bio,
         avatarUrl: user.avatarUrl,
       },
     });
@@ -113,6 +115,7 @@ export const refresh = async (req, res, next) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        bio: user.bio,
         avatarUrl: user.avatarUrl,
       },
     });
@@ -131,6 +134,7 @@ export const current = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      bio: user.bio,
       avatarUrl: user.avatarUrl,
     },
   });

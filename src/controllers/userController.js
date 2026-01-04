@@ -170,6 +170,9 @@ export const updateUserInfo = async (req, res, next) => {
   }
 };
 
+// Alias for bio-specific route to match router import
+export const updateUserBio = updateUserInfo;
+
 /**
  * POST /api/users/:userId/avatar
  * Upload user avatar (multer puts file into req.file)
