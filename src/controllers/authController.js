@@ -1,14 +1,16 @@
 import createHttpError from "http-errors";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import User from "../models/User.js";
 
 import {
   register as registerService,
-  login as loginService,
   refresh as refreshService,
   logout as logoutService,
 } from "../services/authService.js";
 
 import { saveFileLocally } from "../utils/saveFileLocally.js";
-console.log('🔥 AUTH CONTROLLER LOADED FROM SRC');
+
 /* ===================== REGISTER ===================== */
 export const register = async (req, res, next) => {
   try {
@@ -19,34 +21,30 @@ export const register = async (req, res, next) => {
       avatarUrl = await saveFileLocally(req.file);
     }
 
-    // дальше код регистрации пользователя
+    const { user } = await registerService(
+      name,
+      email,
+      password,
+      avatarUrl
+    );
 
-    const { user, accessToken, refreshToken, refreshTokenExpiresIn } =
-      await registerService(name, email, password, avatarUrl);
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     res.status(201).json({
       status: 201,
       message: "User registered successfully",
       data: {
         accessToken,
-        refreshToken,
-        refreshTokenExpiresIn,
-
         _id: user._id,
         name: user.name,
         email: user.email,
         avatarUrl: user.avatarUrl,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-        },
       },
     });
   } catch (error) {
@@ -54,33 +52,36 @@ export const register = async (req, res, next) => {
   }
 };
 
-/* ===================== LOGIN ===================== */
+/* ===================== LOGIN (ИСПРАВЛЕНО) ===================== */
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const { user, accessToken, refreshToken, refreshTokenExpiresIn } =
-      await loginService(email, password);
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw createHttpError(401, "Email or password is wrong");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      throw createHttpError(401, "Email or password is wrong");
+    }
+
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     res.status(200).json({
       status: 200,
       message: "User logged in successfully",
       data: {
         accessToken,
-        refreshToken,
-        refreshTokenExpiresIn,
-
         _id: user._id,
         name: user.name,
         email: user.email,
         avatarUrl: user.avatarUrl,
-
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-        },
       },
     });
   } catch (error) {
@@ -92,33 +93,27 @@ export const login = async (req, res, next) => {
 export const refresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
-
     if (!refreshToken) {
       throw createHttpError(401, "No refresh token");
     }
 
-    const { accessToken, newRefreshToken, refreshTokenExpiresIn, user } =
-      await refreshService(refreshToken);
+    const { user } = await refreshService(refreshToken);
+
+    const accessToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
 
     res.status(200).json({
       status: 200,
       message: "Session refreshed successfully",
       data: {
         accessToken,
-        refreshToken: newRefreshToken,
-        refreshTokenExpiresIn,
-
         _id: user._id,
         name: user.name,
         email: user.email,
         avatarUrl: user.avatarUrl,
-
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          avatarUrl: user.avatarUrl,
-        },
       },
     });
   } catch (error) {
@@ -137,13 +132,6 @@ export const current = async (req, res) => {
       name: user.name,
       email: user.email,
       avatarUrl: user.avatarUrl,
-
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-      },
     },
   });
 };
@@ -152,9 +140,9 @@ export const current = async (req, res) => {
 export const logout = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || "";
-    const [type, accessToken] = authHeader.split(" ");
+    const [, accessToken] = authHeader.split(" ");
 
-    if (type === "Bearer" && accessToken) {
+    if (accessToken) {
       await logoutService(accessToken);
     }
 
@@ -167,7 +155,7 @@ export const logout = async (req, res, next) => {
   }
 };
 
-/* ===================== EXPORT (🔥 ОБЯЗАТЕЛЬНО) ===================== */
+/* ===================== EXPORT ===================== */
 export default {
   register,
   login,
