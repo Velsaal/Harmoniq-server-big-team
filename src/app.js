@@ -6,6 +6,10 @@ import authRouter from "./routers/authRouters.js";
 import usersRouter from "./routers/usersRouters.js";
 import articleRouter from "./routers/articleRouters.js";
 import creatorsRouter from "./routers/creators.js";
+import consultationRouter from "./routers/consultationRouters.js";
+import paypalRouter from "./routers/paypalRouters.js";
+import { notFoundHandler } from "./middlewares/notFoundHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -17,7 +21,13 @@ app.use(
 );
 
 app.options(/.*/, cors());
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 
 /* ✅ СТАТИКА */
 app.use(
@@ -35,6 +45,12 @@ app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/articles", articleRouter);
 app.use("/api/creators", creatorsRouter);
+app.use("/api/consultations", consultationRouter);
+app.use("/api/paypal", paypalRouter);
+
+/* ===== ERROR HANDLERS ===== */
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;
 

@@ -13,7 +13,7 @@ const authMiddleware = async (req, res, next) => {
     const [type, token] = authHeader.split(" ");
 
     if (type !== "Bearer" || !token) {
-      return next(createHttpError(401, "Unauthorized"));
+      return next(createHttpError(401, "Authorization required"));
     }
 
     if (!process.env.JWT_SECRET) {
@@ -24,19 +24,19 @@ const authMiddleware = async (req, res, next) => {
     try {
       payload = jwt.verify(token, process.env.JWT_SECRET);
     } catch (e) {
-      return next(createHttpError(401, "Invalid or expired token"));
+      return next(createHttpError(401, "Authorization required"));
     }
 
     const userId =
       payload.id || payload._id || payload.userId || payload.sub;
 
     if (!userId) {
-      return next(createHttpError(401, "Invalid token payload"));
+      return next(createHttpError(401, "Authorization required"));
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return next(createHttpError(401, "User not found"));
+      return next(createHttpError(401, "Authorization required"));
     }
 
     req.user = user;
